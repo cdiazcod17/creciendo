@@ -1,82 +1,17 @@
-# ------------------------------
-# OS / Editor
-# ------------------------------
-.DS_Store
-Thumbs.db
-.vscode/
-.idea/
-*.swp
-*.swo
+# Backend Python/FastAPI
+backend/.venv/
+backend/__pycache__/
+backend/*.pyc
+backend/.env
+backend/.pytest_cache/
 
-# ------------------------------
-# Root env / secrets
-# ------------------------------
-.env
-.env.*
-!.env.example
-
-# ------------------------------
-# Python / FastAPI backend
-# ------------------------------
-__pycache__/
-*.py[cod]
-*.pyo
-*.pyd
-.python-version
-.venv/
-venv/
-env/
-ENV/
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-.coverage
-htmlcov/
-dist/
-build/
-*.egg-info/
-.eggs/
-
-# Alembic / local db leftovers
-*.sqlite3
-
-# Logs
-*.log
-logs/
-
-# ------------------------------
-# Node / Vue frontend
-# ------------------------------
+# Frontend (asumiendo React/Vite)
 frontend/node_modules/
 frontend/dist/
-frontend/.vite/
-frontend/.cache/
-frontend/coverage/
-frontend/*.local
-
-# Frontend env files
 frontend/.env
-frontend/.env.*
-!frontend/.env.example
+frontend/.vite/
 
-# Package manager debug logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-
-# ------------------------------
-# Temporary / drafts / experiments
-# ------------------------------
-tmp/
-temp/
-drafts/
-experiments/
-notes-private/
-scratch/
-
-# ------------------------------
-# Testing artifacts
-# ------------------------------
-playwright-report/
-test-results/
+# Global
+.DS_Store
+*.log
+.env
