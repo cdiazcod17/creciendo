@@ -1,20 +1,45 @@
-# Backend Python/FastAPI
-backend/.venv/
-backend/__pycache__/
-backend/*.pyc
-backend/.env
-backend/.pytest_cache/
-backend/app/__pycache__/
-backend/app/api/__pycache__/
-backend/app/api/routes/__pycache__/
+# Bytecode compilado Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
 
-# Frontend (asumiendo React/Vite)
+# Entornos virtuales
+.venv/
+venv/
+env/
+ENV/
+
+# Entornos y secretos
+.env
+.env.local
+.env.*
+
+# Pruebas y coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+
+# Alembic
+alembic/
+migrations/
+
+# Logs
+*.log
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Frontend
 frontend/node_modules/
 frontend/dist/
-frontend/.env
 frontend/.vite/
-
-# Global
-.DS_Store
-*.log
-.env
+frontend/.env*
