@@ -1,25 +1,25 @@
 from sqlalchemy.orm import Session
 from app.services.base import BaseService
+from app.api.deps.auth import get_current_user
 from app.models.user import User
 from app.schemas.user import UserRegister
 from app.core.security import get_password_hash, verify_password, create_access_token
 from datetime import timedelta
 from app.core.config import get_settings
 from jose import jwt
-
+from app.core.enums import Roles
 
 class AuthService(BaseService):
     def register_user(self, payload: UserRegister) -> User:
-        """Registra usuario."""
         user = User(
             full_name=payload.full_name,
             email=payload.email,
-            hashed_password=get_password_hash(payload.password)
+            hashed_password=get_password_hash(payload.password),
+            role=Roles.user
         )
         return self.add_and_refresh(user)
     
     def authenticate_user(self, email: str, password: str) -> User:
-        """Valida credenciales."""
         user = self.session.query(User).filter(User.email == email).first()
         if not user or not verify_password(password, user.hashed_password):
             raise ValueError("Credenciales inválidas")
@@ -28,7 +28,6 @@ class AuthService(BaseService):
         return user
     
     def generate_tokens(self, user: User) -> dict:
-        """Genera tokens."""
         settings = get_settings()
         access_token = create_access_token(
             data={"sub": user.email},
@@ -41,7 +40,6 @@ class AuthService(BaseService):
         return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
     
     def refresh_token(self, refresh_token: str) -> dict:
-        """Refresca access token."""
         settings = get_settings()
         payload = jwt.decode(
             refresh_token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
