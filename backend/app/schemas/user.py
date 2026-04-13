@@ -1,10 +1,10 @@
 from pydantic import BaseModel,EmailStr, Field, field_validator,ConfigDict
 import uuid
+from app.core.enums import Roles
 
 class UserRegister(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True)
     full_name: str = Field(min_length=2, max_length=100)
-    email: EmailStr
     email: EmailStr
     password: str
     
@@ -23,4 +23,5 @@ class UserRead(BaseModel):
     full_name: str | None = None
     email: EmailStr
     is_active: bool
+    role: Roles
     model_config = ConfigDict(from_attributes=True)
