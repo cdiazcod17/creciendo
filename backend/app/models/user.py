@@ -1,5 +1,5 @@
 from sqlalchemy import String, Boolean
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column,relationship
 from app.db.base import TimestampedUUIDModel
 
 class User(TimestampedUUIDModel):
@@ -26,3 +26,9 @@ class User(TimestampedUUIDModel):
         default=True,
         nullable=False,
     )
+    
+    babies: Mapped[list["Baby"]] = relationship(
+    "Baby",
+    back_populates="user",
+    cascade="all, delete-orphan"
+)

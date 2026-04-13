@@ -1,10 +1,10 @@
 from fastapi import APIRouter,HTTPException,status,Depends
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from app.core.security import verify_password
-from app.schemas.users import UserRead
+from backend.app.schemas.user import UserRead
 from app.db.session import get_db
 from app.models.user import User
-from app.schemas.users import UserRegister
+from backend.app.schemas.user import UserRegister
 from sqlalchemy.orm import Session
 from app.core.security import get_password_hash
 from jose import jwt,JWTError
