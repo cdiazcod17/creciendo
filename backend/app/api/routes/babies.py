@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, status, Depends,Response
 from sqlalchemy.orm import Session
-from typing import List,UUID
+from typing import List
+from uuid import UUID
 
 from app.api.deps.auth import get_current_user,get_current_active_user
 from app.db.session import get_db
