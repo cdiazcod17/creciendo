@@ -1,4 +1,4 @@
-from sqlalchemy import String, Boolean,SQLEnum
+from sqlalchemy import String, Boolean, Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column,relationship
 from app.db.base import TimestampedUUIDModel
 from app.core.enums import Roles
