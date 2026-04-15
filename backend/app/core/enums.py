@@ -1,7 +1,7 @@
 import enum
 
 class Roles(str, enum.Enum):
-    user = "user",
+    user = "user"
     admin = "admin"
 
 
