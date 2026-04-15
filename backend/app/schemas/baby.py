@@ -23,3 +23,10 @@ class BabyRead(BaseModel):
     
 class BabyDetail(BabyRead):
     user: UserRead
+    
+class BabyUpdate(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    name: str | None = Field(default=None, min_length=2, max_length=100)
+    birth_date: date | None = None
+    sex: BabySex | None = None
