@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from uuid import UUID
 
-from sqlalchemy import DateTime, ForeignKey, Index, String, Text, Uuid, SQLEnum
+from sqlalchemy import DateTime, ForeignKey, Index, String, Text, Uuid, Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.enums import AppointmentStatus
