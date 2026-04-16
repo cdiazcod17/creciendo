@@ -28,3 +28,9 @@ class Baby(TimestampedUUIDModel):
     
     user: Mapped["User"] = relationship("User", back_populates="babies")
     
+    events: Mapped[list["Event"]] = relationship(
+        "Event",
+        back_populates="baby",
+        cascade="all, delete-orphan"
+    )   
+    
