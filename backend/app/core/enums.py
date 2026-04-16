@@ -10,3 +10,9 @@ class BabySex(str, enum.Enum):
     female = "female"
     other = "other"
     unknown = "unknown"
+    
+class EventType(str, enum.Enum):
+    feeding = "feeding"
+    sleep = "sleep"
+    diaper = "diaper"
+    bath = "bath"
