@@ -52,7 +52,7 @@ def get_baby(
         )
     return baby
 
-@router.patch("/babies/{baby_id}", response_model=BabyRead)
+@router.patch("/{baby_id}", response_model=BabyRead)
 def update_baby(
     baby_id: UUID,
     payload: BabyUpdate,
@@ -68,6 +68,13 @@ def update_baby(
         raise HTTPException(status_code=404, detail="Bebé no encontrado")
 
     update_data = payload.model_dump(exclude_unset=True)
+    
+    if not update_data:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No se enviaron campos para actualizar"
+        )
+        
     for key, value in update_data.items():
         setattr(baby, key, value)
 
@@ -78,7 +85,7 @@ def update_baby(
 @router.delete("/{baby_id}")
 def delete_baby(
     baby_id: UUID,
-    current_user: User = Depends(get_current_user),
+    current_user: User = Depends(get_current_active_user),
     db: Session = Depends(get_db)
 ):
     baby = db.query(Baby).filter(
