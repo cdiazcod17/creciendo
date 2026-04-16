@@ -38,3 +38,8 @@ class Baby(TimestampedUUIDModel):
         back_populates="baby",
         cascade="all, delete-orphan"
     )
+    appointments: Mapped[list["Appointment"]] = relationship(
+        "Appointment",
+        back_populates="baby",
+        cascade="all, delete-orphan"
+    )

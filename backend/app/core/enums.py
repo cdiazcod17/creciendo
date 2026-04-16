@@ -16,3 +16,8 @@ class EventType(str, enum.Enum):
     sleep = "sleep"
     diaper = "diaper"
     bath = "bath"
+    
+class AppointmentStatus(str, enum.Enum):
+    scheduled = "scheduled"
+    completed = "completed"
+    cancelled = "cancelled"
