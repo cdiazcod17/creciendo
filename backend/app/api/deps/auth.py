@@ -4,7 +4,6 @@ from app.db.session import get_db
 from app.models.user import User
 from sqlalchemy.orm import Session
 from jose import jwt,JWTError
-from dotenv import load_dotenv
 from app.core.config import get_settings
 from app.core.enums import Roles
 

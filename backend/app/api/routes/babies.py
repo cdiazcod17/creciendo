@@ -1,97 +1,58 @@
-from fastapi import APIRouter, HTTPException, status, Depends,Response
-from sqlalchemy.orm import Session
-from typing import List
+# app/api/routes/babies.py
 from uuid import UUID
 
-from app.api.deps.auth import get_current_user,get_current_active_user
-from app.db.session import get_db
-from app.models.user import User
-from app.models.baby import Baby
-from app.schemas.baby import BabyCreate, BabyRead,BabyUpdate
+from fastapi import APIRouter, Depends, Response, status
 
+from app.api.deps.auth import get_current_active_user
+from app.api.deps.services import get_baby_service
+from app.models.user import User
+from app.schemas.baby import BabyCreate, BabyRead, BabyUpdate
+from app.services.baby_service import BabyService
 
 router = APIRouter()
 
+
 @router.post("/", response_model=BabyRead, status_code=status.HTTP_201_CREATED)
 def create_baby(
-    baby_in: BabyCreate,
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    payload: BabyCreate,
+    current_user: User = Depends(get_current_active_user),
+    service: BabyService = Depends(get_baby_service),
 ):
-    baby = Baby(**baby_in.model_dump(), user_id=current_user.id)
-    db.add(baby)
-    db.commit()
-    db.refresh(baby)
-    return baby
+    return service.create_baby(payload, current_user)
 
 
-@router.get("/", response_model=List[BabyRead])
-def get_babies(
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+@router.get("/", response_model=list[BabyRead], status_code=status.HTTP_200_OK)
+def list_babies(
+    current_user: User = Depends(get_current_active_user),
+    service: BabyService = Depends(get_baby_service),
 ):
-    babies = db.query(Baby).filter(Baby.user_id == current_user.id).all()
-    return babies
+    return service.list_babies(current_user)
 
 
-@router.get("/{baby_id}", response_model=BabyRead)
+@router.get("/{baby_id}", response_model=BabyRead, status_code=status.HTTP_200_OK)
 def get_baby(
     baby_id: UUID,
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    current_user: User = Depends(get_current_active_user),
+    service: BabyService = Depends(get_baby_service),
 ):
-    baby = db.query(Baby).filter(
-        Baby.id == baby_id,
-        Baby.user_id == current_user.id
-    ).first()
-    
-    if not baby:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Bebé no encontrado"
-        )
-    return baby
+    return service.get_baby_by_id(baby_id, current_user)
 
-@router.patch("/babies/{baby_id}", response_model=BabyRead)
+
+@router.patch("/{baby_id}", response_model=BabyRead, status_code=status.HTTP_200_OK)
 def update_baby(
     baby_id: UUID,
     payload: BabyUpdate,
-    db: Session = Depends(get_db),
     current_user: User = Depends(get_current_active_user),
+    service: BabyService = Depends(get_baby_service),
 ):
-    baby = db.query(Baby).filter(
-        Baby.id == baby_id,
-        Baby.user_id == current_user.id
-    ).first()
+    return service.update_baby(baby_id, payload, current_user)
 
-    if not baby:
-        raise HTTPException(status_code=404, detail="Bebé no encontrado")
 
-    update_data = payload.model_dump(exclude_unset=True)
-    for key, value in update_data.items():
-        setattr(baby, key, value)
-
-    db.commit()
-    db.refresh(baby)
-    return baby
-
-@router.delete("/{baby_id}")
+@router.delete("/{baby_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_baby(
     baby_id: UUID,
-    current_user: User = Depends(get_current_user),
-    db: Session = Depends(get_db)
+    current_user: User = Depends(get_current_active_user),
+    service: BabyService = Depends(get_baby_service),
 ):
-    baby = db.query(Baby).filter(
-        Baby.id == baby_id,
-        Baby.user_id == current_user.id
-    ).first()
-    
-    if not baby:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Bebé no encontrado"
-        )
-    
-    db.delete(baby)
-    db.commit()
-    return {"detail": "Bebé eliminado exitosamente"}
+    service.delete_baby(baby_id, current_user)
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
