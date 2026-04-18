@@ -88,7 +88,6 @@ export const useAuthStore = defineStore("auth", () => {
       try {
         await authApi.logout(refreshToken);
       } catch {
-        // No-op: local cleanup should happen regardless.
       }
     }
 

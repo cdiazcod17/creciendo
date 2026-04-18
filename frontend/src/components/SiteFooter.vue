@@ -4,7 +4,7 @@
       <div>
         <AppLogo />
         <p class="mt-4 max-w-md text-sm leading-6 text-forest/70">
-          Creciendo acompana el seguimiento diario de bebes con una experiencia clara, suave y enfocada en el contexto del bebe activo.
+          Creciendo acompaña a los padres primerizos a cuidar de su bebe activo con una plataforma clara, confiable  y facil de usar.
         </p>
       </div>
 
