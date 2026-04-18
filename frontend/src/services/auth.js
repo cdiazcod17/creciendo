@@ -7,7 +7,13 @@ export const authApi = {
   },
 
   async login(payload) {
-    const response = await http.post("/auth/login", payload);
+    const data = new URLSearchParams();
+    data.append("username", payload.email);
+    data.append("password", payload.password);
+
+    const response = await http.post("/auth/login", data, {
+      headers: { "Content-Type": "application/x-www-form-urlencoded" }
+    });
     return response.data;
   },
 
@@ -16,7 +22,7 @@ export const authApi = {
     return response.data;
   },
 
-  async logout(refreshToken) {
-    await http.post("/auth/logout", { refresh_token: refreshToken });
+  async logout() {
+    await http.post("/auth/logout");
   },
 };

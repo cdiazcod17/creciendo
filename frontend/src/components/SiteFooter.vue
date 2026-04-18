@@ -4,7 +4,7 @@
       <div>
         <AppLogo />
         <p class="mt-4 max-w-md text-sm leading-6 text-forest/70">
-          Creciendo acompaña a los padres primerizos a cuidar de su bebe activo con una plataforma clara, confiable  y facil de usar.
+          Creciendo acompaña a los padres primerizos a cuidar de su bebe con una plataforma clara, confiable  y facil de usar.
         </p>
       </div>
 
@@ -12,8 +12,8 @@
         <p class="text-sm font-semibold text-forest">Navegacion</p>
         <div class="mt-4 flex flex-col gap-2 text-sm text-forest/70">
           <RouterLink to="/">Inicio</RouterLink>
-          <RouterLink :to="{ name: 'home', hash: '#plataforma' }">Plataforma</RouterLink>
-          <RouterLink :to="{ name: 'home', hash: '#contacto' }">Contactenos</RouterLink>
+          <RouterLink to="/home#plataforma">Plataforma</RouterLink>
+          <RouterLink to="/home#contacto">Contactenos</RouterLink>
         </div>
       </div>
 
@@ -21,7 +21,7 @@
         <p class="text-sm font-semibold text-forest">Contacto</p>
         <div class="mt-4 space-y-2 text-sm text-forest/70">
           <p>hola@creciendo.app</p>
-          <p>Soporte para onboarding, pruebas y mejoras del MVP.</p>
+          <p>Soporte, pruebas y mejoras.</p>
         </div>
       </div>
     </div>

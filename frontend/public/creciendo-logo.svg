@@ -1,0 +1,11 @@
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Logo de Creciendo">
+  <rect width="512" height="512" rx="112" fill="#F4FBF5"/>
+  <path d="M256 364C256 320 255 282 255 246C255 202 275 169 312 143" stroke="#47A85A" stroke-width="20" stroke-linecap="round"/>
+  <path d="M250 269C214 258 182 231 168 194C157 164 163 132 184 108C221 116 251 141 264 176C276 208 271 243 250 269Z" fill="#7ED38D"/>
+  <path d="M263 238C298 231 331 209 350 180C369 151 373 118 362 86C326 93 295 115 276 144C257 173 252 207 263 238Z" fill="#47A85A"/>
+  <circle cx="256" cy="382" r="52" fill="#CFEED4"/>
+  <circle cx="256" cy="366" r="26" fill="#47A85A" fill-opacity="0.12"/>
+  <path d="M224 394C228 372 242 356 256 356C270 356 284 372 288 394" stroke="#47A85A" stroke-width="16" stroke-linecap="round"/>
+  <circle cx="240" cy="378" r="5" fill="#47A85A"/>
+  <circle cx="272" cy="378" r="5" fill="#47A85A"/>
+</svg>

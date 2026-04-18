@@ -1,8 +1,9 @@
+<!-- src/views/LoginView.vue -->
 <template>
   <div class="mx-auto grid max-w-5xl gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:gap-8">
     <section class="card order-1 lg:order-2">
-      <h1 class="font-display text-3xl font-bold">Iniciar sesion</h1>
-      <p class="mt-2 text-sm text-forest/70">Accede a tu cuenta para ver el dashboard de tu bebe activo.</p>
+      <h1 class="font-display text-3xl font-bold">Iniciar sesión</h1>
+      <p class="mt-2 text-sm text-forest/70">Accede a tu cuenta para ver el dashboard de tu bebé activo.</p>
 
       <form class="mt-6 space-y-4" @submit.prevent="onSubmit">
         <div>
@@ -10,7 +11,7 @@
           <input id="email" v-model="form.email" class="input" type="email" required />
         </div>
         <div class="relative">
-          <label class="label" for="password">Contrasena</label>
+          <label class="label" for="password">Contraseña</label>
           <input id="password" v-model="form.password" class="input pr-16" :type="showPassword ? 'text' : 'password'" required />
           <button class="password-toggle" type="button" @click="showPassword = !showPassword">
             {{ showPassword ? "Ocultar" : "Ver" }}
@@ -26,11 +27,9 @@
         </button>
       </form>
 
-      <SocialAuthButtons class="mt-5" :disabled="authStore.isLoading" mode="login" @select="onSocialLogin" />
-
       <p class="mt-4 text-sm text-forest/75">
-        Aun no tienes cuenta?
-        <RouterLink class="font-semibold text-forest" to="/register">Registrate</RouterLink>
+        ¿Aún no tienes cuenta?
+        <RouterLink class="font-semibold text-forest" to="/register">Regístrate</RouterLink>
       </p>
     </section>
 
@@ -39,13 +38,13 @@
         <span class="section-kicker">Ingreso seguro</span>
         <h2 class="mt-4 font-display text-2xl font-bold text-forest sm:text-4xl">Tu rutina de cuidado, clara desde el primer vistazo</h2>
         <p class="mt-4 text-sm leading-6 text-forest/75">
-          Accede a Creciendo para revisar el estado del bebe activo, seguir citas, crecimiento y notas de salud sin perder tiempo.
+          Accede a Creciendo para revisar el estado del bebé activo, seguir citas, crecimiento y notas de salud sin perder tiempo.
         </p>
       </div>
 
       <div class="mt-6 grid gap-3 sm:mt-8 sm:grid-cols-3">
         <div class="rounded-2xl bg-white/70 p-4">
-          <p class="text-xs uppercase tracking-widest text-forest/50">Escaneo rapido</p>
+          <p class="text-xs uppercase tracking-widest text-forest/50">Escaneo rápido</p>
           <p class="mt-2 text-sm text-forest/80">Dashboard resumido y legible en segundos.</p>
         </div>
         <div class="rounded-2xl bg-white/70 p-4">
@@ -53,8 +52,8 @@
           <p class="mt-2 text-sm text-forest/80">Paleta suave para una experiencia enfocada y confiable.</p>
         </div>
         <div class="rounded-2xl bg-white/70 p-4">
-          <p class="text-xs uppercase tracking-widest text-forest/50">Movil primero</p>
-          <p class="mt-2 text-sm text-forest/80">Pensado para registrar datos desde el dia a dia.</p>
+          <p class="text-xs uppercase tracking-widest text-forest/50">Móvil primero</p>
+          <p class="mt-2 text-sm text-forest/80">Pensado para registrar datos desde el día a día.</p>
         </div>
       </div>
     </section>
@@ -65,7 +64,6 @@
 import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 
-import SocialAuthButtons from "../components/SocialAuthButtons.vue";
 import { useAuthStore } from "../stores/auth";
 import { useToast } from "../composables/toast";
 
@@ -85,28 +83,11 @@ async function onSubmit() {
   errorMessage.value = "";
   try {
     await authStore.login(form);
-    toast.success("Sesion iniciada", "Bienvenido de vuelta.");
+    toast.success("Sesión iniciada", "Bienvenido de vuelta.");
     await router.push("/dashboard");
   } catch (error) {
-    errorMessage.value = authStore.normalizeApiError(error, "No fue posible iniciar sesion.");
-    toast.error("Error al iniciar sesion", errorMessage.value);
-  }
-}
-
-async function onSocialLogin(provider) {
-  const providerName = provider === "google" ? "Google" : "Facebook";
-  const accessToken = window.prompt(`Pega el token de acceso de ${providerName}`);
-  if (!accessToken) {
-    return;
-  }
-
-  try {
-    await authStore.loginSocial({ provider, access_token: accessToken });
-    toast.success("Sesion iniciada", `Accediste con ${providerName}.`);
-    await router.push("/dashboard");
-  } catch (error) {
-    const message = authStore.normalizeApiError(error, `No fue posible iniciar sesion con ${providerName}.`);
-    toast.error(`Error con ${providerName}`, message);
+    errorMessage.value = authStore.normalizeApiError(error, "No fue posible iniciar sesión.");
+    toast.error("Error al iniciar sesión", errorMessage.value);
   }
 }
 </script>
