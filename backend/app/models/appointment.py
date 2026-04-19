@@ -7,10 +7,10 @@ from sqlalchemy import DateTime, ForeignKey, Index, String, Text, Uuid, Enum as 
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.enums import AppointmentStatus
-from app.models.base import SoftDeleteTimestampedUUIDModel
+from app.db.base import TimestampedUUIDModel
 
 
-class Appointment(SoftDeleteTimestampedUUIDModel):
+class Appointment(TimestampedUUIDModel):
     __tablename__ = "appointments"
     __table_args__ = (
         Index("ix_appointments_baby_id_scheduled_at", "baby_id", "scheduled_at"),
