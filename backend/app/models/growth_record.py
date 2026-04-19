@@ -1,6 +1,7 @@
 from datetime import datetime
+from uuid import UUID
 
-from sqlalchemy import DateTime, ForeignKey, Numeric, Text
+from sqlalchemy import DateTime, ForeignKey, Numeric, Text, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.db.base import TimestampedUUIDModel
@@ -9,7 +10,8 @@ from app.db.base import TimestampedUUIDModel
 class GrowthRecord(TimestampedUUIDModel):
     __tablename__ = "growth_records"
 
-    baby_id: Mapped[str] = mapped_column(
+    baby_id: Mapped[UUID] = mapped_column(
+        Uuid,
         ForeignKey("babies.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
@@ -41,4 +43,7 @@ class GrowthRecord(TimestampedUUIDModel):
         nullable=True,
     )
 
-    baby = relationship("Baby", back_populates="growth_records")
+    baby: Mapped["Baby"] = relationship(
+        "Baby",
+        back_populates="growth_records",
+    )

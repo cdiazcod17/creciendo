@@ -1,6 +1,7 @@
 from datetime import datetime
+from uuid import UUID
 
-from sqlalchemy import DateTime, ForeignKey, Integer, Enum as SQLEnum, Text
+from sqlalchemy import DateTime, ForeignKey, Integer, Text, Uuid, Enum as SQLEnum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.enums import EventType
@@ -10,7 +11,8 @@ from app.db.base import TimestampedUUIDModel
 class Event(TimestampedUUIDModel):
     __tablename__ = "events"
 
-    baby_id: Mapped[str] = mapped_column(
+    baby_id: Mapped[UUID] = mapped_column(
+        Uuid,
         ForeignKey("babies.id", ondelete="CASCADE"),
         nullable=False,
         index=True,
@@ -38,4 +40,7 @@ class Event(TimestampedUUIDModel):
         nullable=True,
     )
 
-    baby = relationship("Baby", back_populates="events")
+    baby: Mapped["Baby"] = relationship(
+        "Baby",
+        back_populates="events",
+    )

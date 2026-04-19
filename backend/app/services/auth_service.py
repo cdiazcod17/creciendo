@@ -11,6 +11,11 @@ from app.core.enums import Roles
 
 class AuthService(BaseService):
     def register_user(self, payload: UserRegister) -> User:
+        existing_user = self.session.query(User).filter(User.email == payload.email).first()
+        print(f"Checking email {payload.email}, existing: {existing_user}")
+        if existing_user:
+            raise ValueError("El email ya está registrado")
+        
         user = User(
             full_name=payload.full_name,
             email=payload.email,
@@ -47,7 +52,7 @@ class AuthService(BaseService):
         if payload.get("type") != "refresh":
             raise ValueError("Token inválido")
         
-        user = self.get(User, payload["sub"])
+        user = self.session.query(User).filter(User.email == payload["sub"]).first()
         if not user:
             raise ValueError("Usuario no encontrado")
         
