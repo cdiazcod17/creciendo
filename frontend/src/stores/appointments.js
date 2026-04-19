@@ -29,6 +29,17 @@ export const useAppointmentsStore = defineStore("appointments", () => {
     }
   }
 
+  async function fetchNextAppointment(babyId) {
+    if (!babyId) return null;
+
+    try {
+      return await appointmentsApi.getNext(babyId);
+    } catch (err) {
+      console.error("Error fetching next appointment:", err);
+      return null;
+    }
+  }
+
   async function createAppointment(babyId, payload) {
     if (!babyId) throw new Error("Falta el identificador del bebé.");
 
@@ -87,6 +98,7 @@ export const useAppointmentsStore = defineStore("appointments", () => {
     isLoading,
     error,
     fetchAppointments,
+    fetchNextAppointment,
     createAppointment,
     updateAppointment,
     deleteAppointment,

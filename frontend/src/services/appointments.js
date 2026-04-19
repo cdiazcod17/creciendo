@@ -8,6 +8,11 @@ export const appointmentsApi = {
     return response.data;
   },
 
+  async getNext(babyId) {
+    const response = await http.get(`${appointmentsUrl(babyId)}/next`);
+    return response.data;
+  },
+
   async create(babyId, payload) {
     const response = await http.post(appointmentsUrl(babyId), payload);
     return response.data;

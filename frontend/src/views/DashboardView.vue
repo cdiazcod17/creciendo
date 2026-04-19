@@ -1,217 +1,325 @@
 <template>
-  <div class="min-h-screen bg-paper py-8">
+  <div class="min-h-screen bg-paper py-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- Header -->
-      <div class="mb-8">
-        <h1 class="text-3xl font-bold text-ink">Dashboard</h1>
-        <p class="mt-2 text-forest">Gestiona tus bebés y su desarrollo</p>
+      <div class="mb-10">
+        <p class="section-kicker">Bienvenido</p>
+        <h1 class="mt-3 text-4xl font-bold text-ink">Dashboard</h1>
+        <p class="mt-2 text-sm text-forest/80">
+          Resumen de bebés y acceso rápido a funciones principales.
+        </p>
       </div>
 
-      <!-- Loading State -->
-      <div v-if="babiesStore.isLoading" class="flex justify-center items-center py-12">
-        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-leaf"></div>
-      </div>
-
-      <!-- Error State -->
-      <div v-else-if="babiesStore.error" class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-        <div class="flex">
-          <div class="flex-shrink-0">
-            <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+      <div class="mb-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <RouterLink
+        to="/eventos"
+        class="card flex flex-col items-start rounded-3xl border border-sage bg-white/90 p-5 transition-all hover:shadow-md"
+        >
+        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-leaf/10">
+            <svg class="h-5 w-5 text-leaf" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
             </svg>
           </div>
-          <div class="ml-3">
-            <h3 class="text-sm font-medium text-red-800">Error al cargar bebés</h3>
-            <p class="mt-1 text-sm text-red-700">{{ babiesStore.error }}</p>
-            <button
-              @click="babiesStore.fetchBabies()"
-              class="mt-2 text-sm text-red-600 hover:text-red-500 font-medium"
-            >
-              Reintentar
-            </button>
+          <p class="mt-3 text-xs uppercase tracking-[0.18em] text-forest/50">Registro</p>
+          <p class="mt-1 text-sm font-semibold text-ink">Eventos</p>
+          <p class="mt-1 text-xs text-forest/75">Sueño, alimento, baño</p>
+        </RouterLink>
+        <RouterLink
+          to="/crecimiento"
+          class="card flex flex-col items-start rounded-3xl border border-sage bg-white/90 p-5 transition-all hover:shadow-md"
+        >
+          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-leaf/10">
+            <svg class="h-5 w-5 text-leaf" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+            </svg>
           </div>
-        </div>
+          <p class="mt-3 text-xs uppercase tracking-[0.18em] text-forest/50">Métricas</p>
+          <p class="mt-1 text-sm font-semibold text-ink">Crecimiento</p>
+          <p class="mt-1 text-xs text-forest/75">Peso, talla, tipo de sangre (RH)</p>
+        </RouterLink>
+        
+        <RouterLink
+          to="/citas"
+          class="card flex flex-col items-start rounded-3xl border border-sage bg-white/90 p-5 transition-all hover:shadow-md"
+        >
+        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-leaf/10">
+            <svg class="h-5 w-5 text-leaf" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          </div>
+          <p class="mt-3 text-xs uppercase tracking-[0.18em] text-forest/50">Agenda</p>
+          <p class="mt-1 text-sm font-semibold text-ink">Citas</p>
+          <p class="mt-1 text-xs text-forest/75">Controles médicos</p>
+        </RouterLink>
+        
+        <RouterLink
+          to="/dashboard#babies"
+          class="card flex flex-col items-start rounded-3xl border border-sage bg-white/90 p-5 transition-all hover:shadow-md"
+        >
+          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-leaf/10">
+            <svg class="h-5 w-5 text-leaf" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 20c0-3.31 2.69-6 6-6s6 2.69 6 6" />
+            </svg>
+          </div>
+          <p class="mt-3 text-xs uppercase tracking-[0.18em] text-forest/50">Gestión</p>
+          <p class="mt-1 text-sm font-semibold text-ink">Bebés</p>
+          <p class="mt-1 text-xs text-forest/75">Ver y editar perfiles</p>
+        </RouterLink>
+
       </div>
 
-      <!-- Babies Grid -->
-      <div v-else>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <!-- Add Baby Card -->
-          <div class="bg-white rounded-lg shadow-sm border-2 border-dashed border-sage hover:border-leaf transition-colors duration-200">
-            <div class="p-6 text-center">
-              <div class="w-16 h-16 mx-auto mb-4 bg-mist rounded-full flex items-center justify-center">
-                <svg class="w-8 h-8 text-forest" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-              </div>
-              <h3 class="text-lg font-medium text-ink mb-2">Agregar Bebé</h3>
-              <p class="text-forest text-sm mb-4">Registra un nuevo bebé para comenzar a monitorear su desarrollo</p>
-              <button
-                @click="showAddBabyModal = true"
-                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-forest hover:bg-leaf focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-leaf"
-              >
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-                Agregar Bebé
-              </button>
-            </div>
+      <section class="mb-10" id="babies">
+        <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p class="section-kicker">Perfiles activos</p>
+            <h2 class="mt-2 text-2xl font-semibold text-ink">Tus bebés</h2>
           </div>
 
-          <!-- Baby Cards -->
-          <div
+          <button type="button" class="btn-primary" @click="showAddBabyModal = true">
+            Agregar bebé
+          </button>
+        </div>
+
+        <div v-if="babiesStore.isLoading" class="rounded-4xl bg-white/90 p-8 text-center shadow-sm">
+          <div class="inline-flex h-12 w-12 animate-spin rounded-full border-b-2 border-leaf"></div>
+        </div>
+
+        <div v-else-if="babiesStore.error" class="rounded-4xl border border-red-200 bg-red-50 p-6 text-red-700">
+          <p class="font-semibold">Error al cargar</p>
+          <p class="mt-2 text-sm">{{ babiesStore.error }}</p>
+          <button
+            type="button"
+            class="mt-4 text-sm font-medium text-red-600 hover:text-red-500"
+            @click="babiesStore.fetchBabies()"
+          >
+            Reintentar
+          </button>
+        </div>
+
+        <div v-else-if="!babiesStore.babies.length" class="rounded-4xl border border-sage bg-white/90 p-12 text-center">
+          <div class="inline-flex h-16 w-16 items-center justify-center rounded-full bg-mist">
+            <svg class="h-8 w-8 text-forest" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 20c0-3.31 2.69-6 6-6s6 2.69 6 6" />
+            </svg>
+          </div>
+          <h3 class="mt-4 text-lg font-semibold text-ink">No hay bebés registrados</h3>
+          <p class="mt-2 text-sm text-forest/75">
+            Comienza registrando tu primer bebé para acceder a todas las funciones.
+          </p>
+          <button type="button" class="btn-primary mt-6" @click="showAddBabyModal = true">
+            Agregar primer bebé
+          </button>
+        </div>
+
+        <div v-else class="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          <article
             v-for="baby in babiesStore.babies"
             :key="baby.id"
-            class="bg-white/90 rounded-lg shadow-sm border border-sage hover:shadow-md transition-shadow duration-200"
+            class="card rounded-3xl border border-sage bg-white/90 p-6"
           >
-            <div class="p-6">
-              <!-- Baby Header -->
-              <div class="flex items-start justify-between mb-4">
-                <div class="flex items-center">
-                  <div class="w-12 h-12 bg-mist rounded-full flex items-center justify-center mr-3">
-                    <svg class="w-6 h-6 text-forest" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 class="text-lg font-semibold text-ink">{{ baby.name }}</h3>
-                    <p class="text-sm text-forest">{{ getAge(baby.birth_date) }}</p>
-                  </div>
-                </div>
-                <div class="flex space-x-2">
-                  <button
-                    v-if="babiesStore.activeBabyId !== baby.id"
-                    @click="babiesStore.setActiveBaby(baby.id)"
-                    class="inline-flex items-center px-3 py-1 border border-sage text-sm font-medium rounded-md text-forest bg-mist hover:bg-mist/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-leaf"
-                  >
-                    Seleccionar
-                  </button>
-                  <button
-                    v-else
-                    class="inline-flex items-center px-3 py-1 border border-forest text-sm font-medium rounded-md text-forest bg-mist cursor-default"
-                  >
-                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
-                      <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
-                    </svg>
-                    Activo
-                  </button>
-                </div>
+            <div class="flex items-center gap-4">
+              <button
+                v-if="baby.photo_url"
+                type="button"
+                class="h-16 w-16 overflow-hidden rounded-full bg-mist transition hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-leaf"
+                @click="openPhotoModal(baby)"
+                :aria-label="`Ver foto de ${baby.name}`"
+              >
+                <img
+                  :src="baby.photo_url"
+                  :alt="baby.name"
+                  class="h-full w-full object-cover"
+                />
+              </button>
+
+              <div
+                v-else
+                class="flex h-16 w-16 items-center justify-center rounded-full bg-mist text-forest"
+              >
+                <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 20c0-3.31 2.69-6 6-6s6 2.69 6 6" />
+                </svg>
               </div>
 
-              <!-- Baby Info -->
-              <div class="space-y-2">
-                <div class="flex items-center text-sm text-forest">
-                  <svg class="w-4 h-4 mr-2 text-leaf" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                  </svg>
-                  Nacido: {{ formatDate(baby.birth_date) }}
-                </div>
-                <div v-if="baby.sex" class="flex items-center text-sm text-forest">
-                  <svg class="w-4 h-4 mr-2 text-leaf" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                  </svg>
-                  Sexo: {{ baby.sex === 'male' ? 'Masculino' : baby.sex === 'female' ? 'Femenino' : 'Otro' }}
-                </div>
-                <div v-if="baby.notes" class="text-sm text-forest mt-2">
-                  <p class="line-clamp-2">{{ baby.notes }}</p>
-                </div>
-              </div>
-
-              <!-- Actions -->
-              <div class="mt-4 pt-4 border-t border-sage">
-                <div class="flex space-x-2">
-                  <button
-                    @click="viewBabyDetails(baby)"
-                    class="flex-1 inline-flex items-center justify-center px-3 py-2 border border-sage text-sm font-medium rounded-md text-forest bg-white hover:bg-mist focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-leaf"
-                  >
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
-                    Ver Detalles
-                  </button>
-                  <button
-                    @click="editBaby(baby)"
-                    class="flex-1 inline-flex items-center justify-center px-3 py-2 border border-sage text-sm font-medium rounded-md text-forest bg-white hover:bg-mist focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-leaf"
-                  >
-                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                    Editar
-                  </button>
-                </div>
+              <div class="flex-1">
+                <p class="text-sm uppercase tracking-[0.18em] text-forest/60">
+                  {{ getAge(baby.birth_date) }}
+                </p>
+                <h3 class="text-xl font-semibold text-ink">{{ baby.name }}</h3>
+                <p class="text-xs text-forest/75">{{ formatDate(baby.birth_date) }}</p>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <!-- Add Baby Modal -->
-      <div
-        v-if="showAddBabyModal"
-        class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50"
-        @click="showAddBabyModal = false"
-      >
-        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-white" @click.stop>
-          <div class="mt-3">
-            <h3 class="text-lg font-medium text-gray-900 mb-4">Agregar Nuevo Bebé</h3>
-            <form @submit.prevent="handleAddBaby" class="space-y-4">
-              <div>
-                <label class="block text-sm font-medium text-forest">Nombre</label>
-                <input
-                  v-model="newBaby.name"
-                  type="text"
-                  required
-                  class="mt-1 block w-full border-sage rounded-md shadow-sm focus:ring-leaf focus:border-leaf"
-                />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-forest">Fecha de Nacimiento</label>
-                <input
-                  v-model="newBaby.birth_date"
-                  type="date"
-                  required
-                  class="mt-1 block w-full border-sage rounded-md shadow-sm focus:ring-leaf focus:border-leaf"
-                />
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-forest">Sexo</label>
-                <select
-                  v-model="newBaby.sex"
-                  class="mt-1 block w-full border-sage rounded-md shadow-sm focus:ring-leaf focus:border-leaf"
-                >
-                  <option value="">Seleccionar</option>
-                  <option value="male">Masculino</option>
-                  <option value="female">Femenino</option>
-                  <option value="other">Otro</option>
-                </select>
-              </div>
-              <div>
-                <label class="block text-sm font-medium text-forest">Notas</label>
-                <textarea
-                  v-model="newBaby.notes"
-                  rows="3"
-                  class="mt-1 block w-full border-sage rounded-md shadow-sm focus:ring-leaf focus:border-leaf"
-                ></textarea>
-              </div>
-              <div class="flex justify-end space-x-3 pt-4">
-                <button
-                  type="button"
-                  @click="showAddBabyModal = false"
-                  class="px-4 py-2 border border-sage rounded-md text-sm font-medium text-forest hover:bg-mist focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-leaf"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  :disabled="isSubmitting"
-                  class="px-4 py-2 border border-transparent rounded-md text-sm font-medium text-white bg-forest hover:bg-leaf focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-leaf disabled:opacity-50"
-                >
-                  {{ isSubmitting ? 'Agregando...' : 'Agregar Bebé' }}
-                </button>
-              </div>
-            </form>
+            <div v-if="baby.notes" class="mt-4 rounded-xl border border-sage bg-mist p-3">
+              <p class="text-xs text-forest/75 line-clamp-2">{{ baby.notes }}</p>
+            </div>
+
+            <div class="mt-5 flex flex-wrap gap-2">
+              <RouterLink
+                :to="{ name: 'baby-details', params: { babyId: baby.id } }"
+                class="btn-muted flex-1 text-center"
+              >
+                Editar datos
+              </RouterLink>
+
+              <RouterLink
+                :to="{ name: 'baby', params: { babyId: baby.id } }"
+                class="btn-primary flex-1 bg-leaf text-center hover:bg-forest"
+              >
+                Seleccionar
+              </RouterLink>
+
+              <button
+                type="button"
+                class="btn-muted flex-1 border-red-200 text-red-600 hover:bg-red-50"
+                @click="confirmDelete(baby.id, baby.name)"
+              >
+                Eliminar
+              </button>
+            </div>
+          </article>
+        </div>
+      </section>
+    </div>
+
+    <div v-if="showAddBabyModal" class="fixed inset-0 z-50 bg-slate-900/40 px-4 py-6">
+      <div class="mx-auto max-w-2xl rounded-4xl bg-white p-6 shadow-2xl">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <p class="section-kicker">Nuevo bebé</p>
+            <h2 class="mt-2 text-2xl font-semibold text-ink">Registra un nuevo perfil</h2>
           </div>
+          <button
+            type="button"
+            class="text-forest hover:text-ink"
+            @click="showAddBabyModal = false"
+          >
+            ✕
+          </button>
+        </div>
+
+        <form class="mt-6 space-y-4" @submit.prevent="handleAddBaby">
+          <div>
+            <label class="label">Nombre</label>
+            <input
+              v-model="newBaby.name"
+              type="text"
+              class="input"
+              required
+              placeholder="Nombre del bebé"
+            />
+          </div>
+
+          <div>
+            <label class="label">Fecha de nacimiento</label>
+            <input
+              v-model="newBaby.birth_date"
+              type="date"
+              class="input"
+              required
+            />
+          </div>
+
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div>
+              <label class="label">Sexo</label>
+              <select v-model="newBaby.sex" class="input">
+                <option value="">Seleccionar</option>
+                <option value="male">Masculino</option>
+                <option value="female">Femenino</option>
+                <option value="other">Otro</option>
+              </select>
+            </div>
+          </div>
+
+          <div>
+            <label class="label">Foto (URL)</label>
+            <input
+              v-model="newBaby.photo_url"
+              type="url"
+              class="input"
+              placeholder="https://ejemplo.com/foto.jpg"
+            />
+          </div>
+
+          <div>
+            <label class="label">Notas</label>
+            <textarea
+              v-model="newBaby.notes"
+              rows="3"
+              class="input"
+              placeholder="Observaciones especiales"
+            ></textarea>
+          </div>
+
+          <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
+            <button
+              type="button"
+              class="btn-muted"
+              @click="showAddBabyModal = false"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              class="btn-primary"
+              :disabled="isSubmitting"
+            >
+              {{ isSubmitting ? 'Guardando...' : 'Guardar' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div
+      v-if="showPhotoModal && selectedBabyPhoto"
+      class="fixed inset-0 z-[60] bg-slate-950/70 px-4 py-6"
+      @click.self="closePhotoModal"
+    >
+      <div class="mx-auto max-w-3xl rounded-4xl bg-white p-6 shadow-2xl">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <p class="section-kicker">Foto del bebé</p>
+            <h2 class="mt-2 text-2xl font-semibold text-ink">
+              {{ selectedBabyPhoto.name }}
+            </h2>
+          </div>
+
+          <button
+            type="button"
+            class="text-forest hover:text-ink"
+            @click="closePhotoModal"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div class="mt-6 overflow-hidden rounded-3xl bg-mist">
+          <img
+            :src="selectedBabyPhoto.photo_url"
+            :alt="`Foto de ${selectedBabyPhoto.name}`"
+            class="h-auto w-full object-cover"
+          />
+        </div>
+
+        <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
+          <button
+            type="button"
+            class="btn-muted"
+            @click="closePhotoModal"
+          >
+            Cerrar
+          </button>
+          <button
+            type="button"
+            class="btn-primary"
+            @click="closePhotoModal"
+          >
+            Guardar
+          </button>
         </div>
       </div>
     </div>
@@ -221,24 +329,38 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useBabiesStore } from '../stores/babies'
+import { useToast } from '../composables/toast'
 
 const babiesStore = useBabiesStore()
+const toast = useToast()
 
 const showAddBabyModal = ref(false)
+const showPhotoModal = ref(false)
+const selectedBabyPhoto = ref(null)
 const isSubmitting = ref(false)
+
 const newBaby = ref({
   name: '',
   birth_date: '',
   sex: '',
-  notes: ''
+  notes: '',
+  photo_url: '',
 })
 
-// Load babies on component mount
 onMounted(() => {
   babiesStore.fetchBabies()
 })
 
-// Helper functions
+function openPhotoModal(baby) {
+  selectedBabyPhoto.value = baby
+  showPhotoModal.value = true
+}
+
+function closePhotoModal() {
+  showPhotoModal.value = false
+  selectedBabyPhoto.value = null
+}
+
 function getAge(birthDate) {
   const today = new Date()
   const birth = new Date(birthDate)
@@ -258,44 +380,44 @@ function getAge(birthDate) {
 }
 
 function formatDate(dateString) {
+  if (!dateString) return ''
   const date = new Date(dateString)
   return date.toLocaleDateString('es-ES', {
     year: 'numeric',
     month: 'long',
-    day: 'numeric'
+    day: 'numeric',
   })
 }
 
-// Event handlers
 async function handleAddBaby() {
   isSubmitting.value = true
   try {
     await babiesStore.createBaby(newBaby.value)
+    toast.success('Bebé agregado', 'El perfil fue creado correctamente.')
     showAddBabyModal.value = false
-    newBaby.value = { name: '', birth_date: '', sex: '', notes: '' }
+    newBaby.value = {
+      name: '',
+      birth_date: '',
+      sex: '',
+      notes: '',
+      photo_url: '',
+    }
   } catch (error) {
-    console.error('Error creating baby:', error)
+    toast.error('Error', babiesStore.error || 'No se pudo crear el bebé.')
   } finally {
     isSubmitting.value = false
   }
 }
 
-function viewBabyDetails(baby) {
-  // Navigate to baby detail view (to be implemented)
-  console.log('View baby details:', baby)
-}
+async function confirmDelete(babyId, babyName) {
+  const accepted = window.confirm(`¿Estás seguro de que deseas eliminar el perfil de ${babyName}? Esta acción no se puede deshacer.`)
+  if (!accepted) return
 
-function editBaby(baby) {
-  // Navigate to edit baby view (to be implemented)
-  console.log('Edit baby:', baby)
+  try {
+    await babiesStore.deleteBaby(babyId)
+    toast.success('Bebé eliminado', 'El perfil fue eliminado correctamente.')
+  } catch (error) {
+    toast.error('Error', babiesStore.error || 'No se pudo eliminar el bebé.')
+  }
 }
 </script>
-
-<style lang="scss" scoped>
-.line-clamp-2 {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-</style>
