@@ -8,8 +8,7 @@
         La ruta que buscabas no existe o ya no está disponible. Regresa al inicio para iniciar sesión.
       </p>
       <div class="mt-8 flex justify-center gap-3">
-        <RouterLink to="/" class="btn-primary">Ir al login</RouterLink>
-        <RouterLink to="/home" class="btn-muted">Ver info</RouterLink>
+        <RouterLink to="/" class="btn-primary">Regresar</RouterLink>
       </div>
     </div>
   </div>

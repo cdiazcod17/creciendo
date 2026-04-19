@@ -5,12 +5,13 @@ import { babiesApi } from "../services/babies";
 
 export const useBabiesStore = defineStore("babies", () => {
   const babies = ref([]);
+  const baby = ref(null);
   const activeBabyId = ref(null);
   const isLoading = ref(false);
   const error = ref(null);
 
   const activeBaby = computed(() => {
-    return babies.value.find(baby => baby.id === activeBabyId.value) || null;
+    return babies.value.find((baby) => baby.id === activeBabyId.value) || null;
   });
 
   const hasBabies = computed(() => babies.value.length > 0);
@@ -21,13 +22,30 @@ export const useBabiesStore = defineStore("babies", () => {
     try {
       const data = await babiesApi.listBabies();
       babies.value = data;
-      // Set first baby as active if none is set
       if (data.length > 0 && !activeBabyId.value) {
         activeBabyId.value = data[0].id;
       }
+      return data;
     } catch (err) {
       error.value = err.message || "Error al cargar bebés";
       console.error("Error fetching babies:", err);
+      throw err;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  async function fetchBaby(babyId) {
+    isLoading.value = true;
+    error.value = null;
+    try {
+      const data = await babiesApi.getBaby(babyId);
+      baby.value = data;
+      return data;
+    } catch (err) {
+      error.value = err.message || "Error al cargar bebé";
+      console.error("Error fetching baby:", err);
+      throw err;
     } finally {
       isLoading.value = false;
     }
@@ -37,7 +55,6 @@ export const useBabiesStore = defineStore("babies", () => {
     try {
       const newBaby = await babiesApi.createBaby(babyData);
       babies.value.push(newBaby);
-      // Set as active if it's the first baby
       if (babies.value.length === 1) {
         activeBabyId.value = newBaby.id;
       }
@@ -55,9 +72,12 @@ export const useBabiesStore = defineStore("babies", () => {
   async function updateBaby(babyId, babyData) {
     try {
       const updatedBaby = await babiesApi.updateBaby(babyId, babyData);
-      const index = babies.value.findIndex(b => b.id === babyId);
+      const index = babies.value.findIndex((b) => b.id === babyId);
       if (index !== -1) {
         babies.value[index] = updatedBaby;
+      }
+      if (baby.value && baby.value.id === babyId) {
+        baby.value = updatedBaby;
       }
       return updatedBaby;
     } catch (err) {
@@ -69,8 +89,7 @@ export const useBabiesStore = defineStore("babies", () => {
   async function deleteBaby(babyId) {
     try {
       await babiesApi.deleteBaby(babyId);
-      babies.value = babies.value.filter(b => b.id !== babyId);
-      // If deleted baby was active, set another one as active
+      babies.value = babies.value.filter((b) => b.id !== babyId);
       if (activeBabyId.value === babyId && babies.value.length > 0) {
         activeBabyId.value = babies.value[0].id;
       } else if (babies.value.length === 0) {
@@ -84,12 +103,14 @@ export const useBabiesStore = defineStore("babies", () => {
 
   return {
     babies,
+    baby,
     activeBabyId,
     activeBaby,
     isLoading,
     error,
     hasBabies,
     fetchBabies,
+    fetchBaby,
     createBaby,
     setActiveBaby,
     updateBaby,

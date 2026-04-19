@@ -1,6 +1,7 @@
 import axios from "axios";
 
-const apiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000";
+const rawApiBaseUrl = import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000";
+const apiBaseUrl = rawApiBaseUrl.replace(/\/+$/, "");
 
 export const http = axios.create({
   baseURL: apiBaseUrl,
@@ -18,6 +19,7 @@ const processQueue = (token) => {
 http.interceptors.request.use((config) => {
   const accessToken = localStorage.getItem("access_token");
   if (accessToken) {
+    config.headers = config.headers || {};
     config.headers.Authorization = `Bearer ${accessToken}`;
   }
   return config;
@@ -48,6 +50,8 @@ http.interceptors.response.use(
               reject(error);
               return;
             }
+
+            originalRequest.headers = originalRequest.headers || {};
             originalRequest.headers.Authorization = `Bearer ${newToken}`;
             resolve(http(originalRequest));
           });
@@ -55,15 +59,24 @@ http.interceptors.response.use(
       }
 
       isRefreshing = true;
+
       try {
         const response = await axios.post(`${apiBaseUrl}/auth/refresh`, {
           refresh_token: refreshToken,
         });
+
         const newAccessToken = response.data.access_token;
         const newRefreshToken = response.data.refresh_token;
+
         localStorage.setItem("access_token", newAccessToken);
-        localStorage.setItem("refresh_token", newRefreshToken);
+
+        if (newRefreshToken) {
+          localStorage.setItem("refresh_token", newRefreshToken);
+        }
+
         processQueue(newAccessToken);
+
+        originalRequest.headers = originalRequest.headers || {};
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return http(originalRequest);
       } catch (refreshError) {
