@@ -43,6 +43,24 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: "/bebes",
+      name: "babies",
+      component: () => import('../views/BabiesView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/bebes/:babyId",
+      name: "baby-detail",
+      component: () => import('../views/BabyView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/citas",
+      name: "appointments",
+      component: () => import('../views/AppointmentView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: "/:pathMatch(.*)*",
       name: "not-found",
       component: NotFoundView,
