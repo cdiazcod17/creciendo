@@ -1,3 +1,4 @@
+from datetime import datetime,timezone
 from uuid import UUID
 
 from fastapi import HTTPException, status
@@ -7,6 +8,7 @@ from app.models.baby import Baby
 from app.models.user import User
 from app.schemas.appointment import AppointmentCreate, AppointmentUpdate
 from app.services.base import BaseService
+from app.core.enums import AppointmentStatus
 
 
 class AppointmentService(BaseService):
@@ -74,6 +76,20 @@ class AppointmentService(BaseService):
             .filter(Appointment.baby_id == baby_id)
             .order_by(Appointment.scheduled_at.desc())
             .all()
+        )
+
+    def get_next_appointment(self, baby_id: UUID, current_user: User) -> Appointment | None:
+        self._get_owned_baby(baby_id, current_user)
+
+        return (
+            self.session.query(Appointment)
+            .filter(
+                Appointment.baby_id == baby_id,
+                Appointment.scheduled_at >= datetime.now(timezone.utc),
+                Appointment.status == AppointmentStatus.scheduled,
+            )
+            .order_by(Appointment.scheduled_at.asc())
+            .first()
         )
 
     def get_appointment_by_id(self, baby_id: UUID, appointment_id: UUID, current_user: User) -> Appointment:

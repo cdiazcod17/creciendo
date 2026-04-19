@@ -30,6 +30,15 @@ def list_appointments(
     return service.list_appointments(baby_id, current_user)
 
 
+@router.get("/next", response_model=AppointmentRead | None, status_code=status.HTTP_200_OK)
+def get_next_appointment(
+    baby_id: UUID,
+    current_user: User = Depends(get_current_active_user),
+    service: AppointmentService = Depends(get_appointment_service),
+):
+    return service.get_next_appointment(baby_id, current_user)
+
+
 @router.get("/{appointment_id}", response_model=AppointmentRead, status_code=status.HTTP_200_OK)
 def get_appointment(
     baby_id: UUID,

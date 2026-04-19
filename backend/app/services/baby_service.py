@@ -12,9 +12,11 @@ from app.services.base import BaseService
 class BabyService(BaseService):
     def create_baby(self, payload: BabyCreate, current_user: User) -> Baby:
         baby = Baby(
-            full_name=payload.full_name,
+            name=payload.name,
             birth_date=payload.birth_date,
             sex=payload.sex,
+            notes=payload.notes,
+            photo_url=payload.photo_url,
             user_id=current_user.id,
         )
 

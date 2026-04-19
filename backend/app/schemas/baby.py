@@ -1,4 +1,5 @@
 from datetime import date, datetime
+from uuid import UUID
 from pydantic import BaseModel, Field, ConfigDict
 from app.core.enums import BabySex
 from .user import UserRead
@@ -8,14 +9,16 @@ class BabyCreate(BaseModel):
     birth_date: date
     sex: BabySex | None = None
     notes: str | None = None
+    photo_url: str | None = None
 
 
 class BabyRead(BaseModel):
-    id: str
+    id: UUID
     name: str
     birth_date: date
     sex: BabySex | None = None
     notes: str | None = None
+    photo_url: str | None = None
     created_at: datetime
     updated_at: datetime
 
@@ -30,3 +33,5 @@ class BabyUpdate(BaseModel):
     name: str | None = Field(default=None, min_length=2, max_length=100)
     birth_date: date | None = None
     sex: BabySex | None = None
+    notes: str | None = None
+    photo_url: str | None = None

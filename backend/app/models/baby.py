@@ -33,6 +33,11 @@ class Baby(TimestampedUUIDModel):
         nullable=True,
     )
 
+    photo_url: Mapped[str | None] = mapped_column(
+        String(500),
+        nullable=True,
+    )
+
     user_id: Mapped[UUID] = mapped_column(
         Uuid,
         ForeignKey("users.id", ondelete="CASCADE"),
