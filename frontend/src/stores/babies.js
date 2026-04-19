@@ -1,103 +1,143 @@
-import { ref, computed } from "vue";
-import { defineStore } from "pinia";
+import { ref, computed } from 'vue'
+import { defineStore } from 'pinia'
+import { babiesApi } from '../services/babies'
 
-import { babiesApi } from "../services/babies";
+function normalizeError(error, fallback) {
+  return error?.response?.data?.detail || error?.message || fallback
+}
 
-export const useBabiesStore = defineStore("babies", () => {
-  const babies = ref([]);
-  const baby = ref(null);
-  const activeBabyId = ref(null);
-  const isLoading = ref(false);
-  const error = ref(null);
+export const useBabiesStore = defineStore('babies', () => {
+  const babies = ref([])
+  const baby = ref(null)
+  const activeBabyId = ref(null)
+  const isLoading = ref(false)
+  const error = ref(null)
 
   const activeBaby = computed(() => {
-    return babies.value.find((baby) => baby.id === activeBabyId.value) || null;
-  });
+    return babies.value.find((item) => item.id === activeBabyId.value) || null
+  })
 
-  const hasBabies = computed(() => babies.value.length > 0);
+  const hasBabies = computed(() => babies.value.length > 0)
+
+  function ensureActiveBaby() {
+    if (!babies.value.length) {
+      activeBabyId.value = null
+      return
+    }
+
+    const exists = babies.value.some((item) => item.id === activeBabyId.value)
+
+    if (!activeBabyId.value || !exists) {
+      activeBabyId.value = babies.value[0].id
+    }
+  }
 
   async function fetchBabies() {
-    isLoading.value = true;
-    error.value = null;
+    isLoading.value = true
+    error.value = null
+
     try {
-      const data = await babiesApi.listBabies();
-      babies.value = data;
-      if (data.length > 0 && !activeBabyId.value) {
-        activeBabyId.value = data[0].id;
-      }
-      return data;
+      const data = await babiesApi.listBabies()
+      babies.value = data
+      ensureActiveBaby()
+      return data
     } catch (err) {
-      error.value = err.message || "Error al cargar bebés";
-      console.error("Error fetching babies:", err);
-      throw err;
+      error.value = normalizeError(err, 'Error al cargar bebés')
+      throw err
     } finally {
-      isLoading.value = false;
+      isLoading.value = false
     }
   }
 
   async function fetchBaby(babyId) {
-    isLoading.value = true;
-    error.value = null;
+    if (!babyId) {
+      baby.value = null
+      return null
+    }
+
+    isLoading.value = true
+    error.value = null
+
     try {
-      const data = await babiesApi.getBaby(babyId);
-      baby.value = data;
-      return data;
+      const data = await babiesApi.getBaby(babyId)
+      baby.value = data
+      return data
     } catch (err) {
-      error.value = err.message || "Error al cargar bebé";
-      console.error("Error fetching baby:", err);
-      throw err;
+      error.value = normalizeError(err, 'Error al cargar bebé')
+      throw err
     } finally {
-      isLoading.value = false;
+      isLoading.value = false
     }
   }
 
   async function createBaby(babyData) {
+    isLoading.value = true
+    error.value = null
+
     try {
-      const newBaby = await babiesApi.createBaby(babyData);
-      babies.value.push(newBaby);
+      const newBaby = await babiesApi.createBaby(babyData)
+      babies.value.push(newBaby)
+
       if (babies.value.length === 1) {
-        activeBabyId.value = newBaby.id;
+        activeBabyId.value = newBaby.id
       }
-      return newBaby;
+
+      return newBaby
     } catch (err) {
-      error.value = err.message || "Error al crear bebé";
-      throw err;
+      error.value = normalizeError(err, 'Error al crear bebé')
+      throw err
+    } finally {
+      isLoading.value = false
     }
   }
 
   function setActiveBaby(babyId) {
-    activeBabyId.value = babyId;
+    activeBabyId.value = babyId
   }
 
   async function updateBaby(babyId, babyData) {
+    isLoading.value = true
+    error.value = null
+
     try {
-      const updatedBaby = await babiesApi.updateBaby(babyId, babyData);
-      const index = babies.value.findIndex((b) => b.id === babyId);
-      if (index !== -1) {
-        babies.value[index] = updatedBaby;
+      const updatedBaby = await babiesApi.updateBaby(babyId, babyData)
+
+      babies.value = babies.value.map((item) =>
+        item.id === babyId ? updatedBaby : item
+      )
+
+      if (baby.value?.id === babyId) {
+        baby.value = updatedBaby
       }
-      if (baby.value && baby.value.id === babyId) {
-        baby.value = updatedBaby;
-      }
-      return updatedBaby;
+
+      return updatedBaby
     } catch (err) {
-      error.value = err.message || "Error al actualizar bebé";
-      throw err;
+      error.value = normalizeError(err, 'Error al actualizar bebé')
+      throw err
+    } finally {
+      isLoading.value = false
     }
   }
 
   async function deleteBaby(babyId) {
+    isLoading.value = true
+    error.value = null
+
     try {
-      await babiesApi.deleteBaby(babyId);
-      babies.value = babies.value.filter((b) => b.id !== babyId);
-      if (activeBabyId.value === babyId && babies.value.length > 0) {
-        activeBabyId.value = babies.value[0].id;
-      } else if (babies.value.length === 0) {
-        activeBabyId.value = null;
+      await babiesApi.deleteBaby(babyId)
+
+      babies.value = babies.value.filter((item) => item.id !== babyId)
+
+      if (baby.value?.id === babyId) {
+        baby.value = null
       }
+
+      ensureActiveBaby()
     } catch (err) {
-      error.value = err.message || "Error al eliminar bebé";
-      throw err;
+      error.value = normalizeError(err, 'Error al eliminar bebé')
+      throw err
+    } finally {
+      isLoading.value = false
     }
   }
 
@@ -115,5 +155,5 @@ export const useBabiesStore = defineStore("babies", () => {
     setActiveBaby,
     updateBaby,
     deleteBaby,
-  };
-});
+  }
+})
