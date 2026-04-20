@@ -26,7 +26,7 @@
         </RouterLink>
 
         <RouterLink
-          to="/citas"
+          to="/appointments"
           class="card flex flex-col items-start rounded-3xl border border-sage bg-white/90 p-5 transition-all hover:shadow-md"
         >
           <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-leaf/10">

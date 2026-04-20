@@ -9,6 +9,7 @@ from app.services.event_service import EventService
 from app.services.dashboard_service import DashboardService
 from app.services.growth_service import GrowthService
 from app.services.appointment_service import AppointmentService
+from app.services.baby_context_service import BabyContextService
 
 def get_auth_service(db: Session = Depends(get_db)) -> AuthService:
     return AuthService(db)
@@ -31,3 +32,6 @@ def get_growth_service(db: Session = Depends(get_db)) -> GrowthService:
 
 def get_appointment_service(db: Session = Depends(get_db)) -> AppointmentService:
     return AppointmentService(db)
+
+def get_baby_context_service(db: Session = Depends(get_db)) -> BabyContextService:
+    return BabyContextService(db)

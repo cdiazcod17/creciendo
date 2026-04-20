@@ -1,4 +1,3 @@
-# app/services/growth_service.py
 from uuid import UUID
 
 from fastapi import HTTPException, status
