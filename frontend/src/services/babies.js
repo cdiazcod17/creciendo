@@ -24,4 +24,9 @@ export const babiesApi = {
     async deleteBaby(babyId) {
         await http.delete(`/babies/${babyId}`);
     },
+
+    async setActiveBaby(activeBabyId) {
+        const response = await http.patch("/auth/me/active-baby", { active_baby_id: activeBabyId });
+        return response.data;
+    },
 };

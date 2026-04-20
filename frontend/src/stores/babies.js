@@ -91,8 +91,19 @@ export const useBabiesStore = defineStore('babies', () => {
     }
   }
 
-  function setActiveBaby(babyId) {
-    activeBabyId.value = babyId
+  async function setActiveBaby(babyId) {
+    isLoading.value = true
+    error.value = null
+
+    try {
+      await babiesApi.setActiveBaby(babyId)
+      activeBabyId.value = babyId
+    } catch (err) {
+      error.value = normalizeError(err, 'Error al cambiar bebé activo')
+      throw err
+    } finally {
+      isLoading.value = false
+    }
   }
 
   async function updateBaby(babyId, babyData) {

@@ -5,8 +5,15 @@
         <AppLogo />
 
         <nav class="hidden items-center gap-6 md:flex">
-
-          <template v-if="!authStore.isAuthenticated">
+          <template v-if="authStore.isAuthenticated">
+            <RouterLink class="nav-link" :to="primaryAuthenticatedRoute">{{ primaryAuthenticatedLabel }}</RouterLink>
+            <RouterLink v-if="authStore.hasActiveBaby" class="nav-link" to="/eventos">Eventos</RouterLink>
+            <RouterLink v-if="authStore.hasActiveBaby" class="nav-link" to="/citas">Citas</RouterLink>
+            <RouterLink v-if="authStore.hasActiveBaby" class="nav-link" to="/crecimiento">Crecimiento</RouterLink>
+            <RouterLink v-if="authStore.hasActiveBaby" class="nav-link" to="/salud">Salud</RouterLink>
+            <RouterLink class="nav-link" to="/babies">Bebes</RouterLink>
+          </template>
+          <template v-else>
             <RouterLink class="nav-link" to="/">Inicio</RouterLink>
             <RouterLink class="nav-link" :to="{ name: 'home', hash: '#plataforma' }">Plataforma</RouterLink>
             <RouterLink class="nav-link" :to="{ name: 'home', hash: '#contacto' }">Contactenos</RouterLink>
