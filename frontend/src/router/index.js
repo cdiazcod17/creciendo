@@ -46,15 +46,33 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/babies',
+      name: 'babies',
+      component: () => import('../views/BabiesView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/baby/:babyId',
       name: 'baby',
-      component: () => import('../views/BabyView.vue'),
+      component: () => import('../views/BabyDeatilsView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/baby/new',
+      name: 'baby-new',
+      component: () => import('../views/BabyFormView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/baby/edit/:babyId',
+      name: 'baby-edit',
+      component: () => import('../views/BabyFormView.vue'),
       meta: { requiresAuth: true },
     },
     {
       path: '/baby/details/:babyId',
       name: 'baby-details',
-      component: () => import('../views/BabyView.vue'),
+      component: () => import('../views/BabyDeatilsView.vue'),
       meta: { requiresAuth: true },
     },
     {
