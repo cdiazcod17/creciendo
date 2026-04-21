@@ -12,13 +12,20 @@ export const authApi = {
     data.append("password", payload.password);
 
     const response = await http.post("/auth/login", data, {
-      headers: { "Content-Type": "application/x-www-form-urlencoded" }
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
     });
     return response.data;
   },
 
   async me() {
     const response = await http.get("/auth/me");
+    return response.data;
+  },
+
+  async setActiveBaby(babyId) {
+    const response = await http.patch("/auth/me/active-baby", {
+      baby_id: babyId,
+    });
     return response.data;
   },
 
