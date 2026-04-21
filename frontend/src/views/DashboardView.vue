@@ -1,6 +1,6 @@
 <template>
   <div class="min-h-screen bg-paper py-10">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="mb-10">
         <p class="section-kicker">Bienvenido</p>
         <h1 class="mt-3 text-4xl font-bold text-ink">Dashboard</h1>
@@ -11,13 +11,23 @@
 
       <div class="mb-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <RouterLink
-          to="babies"
+          :to="{ name: 'babies' }"
           class="card flex flex-col items-start rounded-3xl border border-sage bg-white/90 p-5 transition-all hover:shadow-md"
         >
           <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-leaf/10">
             <svg class="h-5 w-5 text-leaf" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4z" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 20c0-3.31 2.69-6 6-6s6 2.69 6 6" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4z"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 20c0-3.31 2.69-6 6-6s6 2.69 6 6"
+              />
             </svg>
           </div>
           <p class="mt-3 text-xs uppercase tracking-[0.18em] text-forest/50">Gestión</p>
@@ -26,12 +36,17 @@
         </RouterLink>
 
         <RouterLink
-          to="/appointments"
+          :to="{ name: 'appointments' }"
           class="card flex flex-col items-start rounded-3xl border border-sage bg-white/90 p-5 transition-all hover:shadow-md"
         >
           <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-leaf/10">
             <svg class="h-5 w-5 text-leaf" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              />
             </svg>
           </div>
           <p class="mt-3 text-xs uppercase tracking-[0.18em] text-forest/50">Agenda</p>
@@ -45,7 +60,12 @@
         >
           <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-leaf/10">
             <svg class="h-5 w-5 text-leaf" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+              />
             </svg>
           </div>
           <p class="mt-3 text-xs uppercase tracking-[0.18em] text-forest/50">Registro</p>
@@ -59,7 +79,12 @@
         >
           <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-leaf/10">
             <svg class="h-5 w-5 text-leaf" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"
+              />
             </svg>
           </div>
           <p class="mt-3 text-xs uppercase tracking-[0.18em] text-forest/50">Métricas</p>
@@ -84,39 +109,43 @@
           </button>
         </div>
 
-        <div
-          v-if="babiesStore.activeBaby"
-          class="mb-6 rounded-3xl border border-leaf/30 bg-leaf/10 p-4"
-        >
-          <p class="text-xs uppercase tracking-[0.18em] text-forest/60">
-            Bebé seleccionado
-          </p>
-          <p class="mt-1 text-sm font-semibold text-ink">
-            {{ babiesStore.activeBaby.name }}
-          </p>
-        </div>
-
         <div v-if="babiesStore.isLoading" class="rounded-4xl bg-white/90 p-8 text-center shadow-sm">
           <div class="inline-flex h-12 w-12 animate-spin rounded-full border-b-2 border-leaf"></div>
         </div>
 
-        <div v-else-if="babiesStore.error" class="rounded-4xl border border-red-200 bg-red-50 p-6 text-red-700">
+        <div
+          v-else-if="babiesStore.error"
+          class="rounded-4xl border border-red-200 bg-red-50 p-6 text-red-700"
+        >
           <p class="font-semibold">Error al cargar</p>
           <p class="mt-2 text-sm">{{ babiesStore.error }}</p>
           <button
             type="button"
             class="mt-4 text-sm font-medium text-red-600 hover:text-red-500"
-            @click="babiesStore.fetchBabies()"
+            @click="initializeDashboard"
           >
             Reintentar
           </button>
         </div>
 
-        <div v-else-if="!babiesStore.babies.length" class="rounded-4xl border border-sage bg-white/90 p-12 text-center">
+        <div
+          v-else-if="!babiesStore.babies.length"
+          class="rounded-4xl border border-sage bg-white/90 p-12 text-center"
+        >
           <div class="inline-flex h-16 w-16 items-center justify-center rounded-full bg-mist">
             <svg class="h-8 w-8 text-forest" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4z" />
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 20c0-3.31 2.69-6 6-6s6 2.69 6 6" />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4z"
+              />
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 20c0-3.31 2.69-6 6-6s6 2.69 6 6"
+              />
             </svg>
           </div>
           <h3 class="mt-4 text-lg font-semibold text-ink">No hay bebés registrados</h3>
@@ -136,16 +165,15 @@
           <article
             v-for="baby in babiesStore.babies"
             :key="baby.id"
-            class="card rounded-3xl border bg-white/90 p-6 transition-all duration-200"
-            :class="isActiveBaby(baby.id)
-              ? 'border-leaf shadow-md ring-2 ring-leaf/20'
-              : 'border-sage hover:shadow-sm'"
+            :class="[
+              'card rounded-3xl border p-6 transition-all duration-200',
+              isBabySelected(baby.id)
+                ? 'border-leaf bg-leaf/5 ring-2 ring-leaf/30 shadow-lg'
+                : 'border-sage bg-white/90 hover:shadow-md'
+            ]"
           >
             <div class="flex items-center gap-4">
-              <div
-                v-if="baby.photo_url"
-                class="h-16 w-16 overflow-hidden rounded-full bg-mist"
-              >
+              <div v-if="baby.photo_url" class="h-16 w-16 overflow-hidden rounded-full bg-mist">
                 <img
                   :src="baby.photo_url"
                   :alt="baby.name"
@@ -158,8 +186,18 @@
                 class="flex h-16 w-16 items-center justify-center rounded-full bg-mist text-forest"
               >
                 <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 20c0-3.31 2.69-6 6-6s6 2.69 6 6" />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M6 20c0-3.31 2.69-6 6-6s6 2.69 6 6"
+                  />
                 </svg>
               </div>
 
@@ -168,11 +206,12 @@
                   <p class="text-sm uppercase tracking-[0.18em] text-forest/60">
                     {{ getAge(baby.birth_date) }}
                   </p>
+
                   <span
-                    v-if="isActiveBaby(baby.id)"
-                    class="inline-flex rounded-full bg-leaf/15 px-2 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-forest"
+                    v-if="isBabySelected(baby.id)"
+                    class="inline-flex items-center rounded-full border border-leaf/20 bg-leaf/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-forest"
                   >
-                    Activo
+                    Seleccionado
                   </span>
                 </div>
 
@@ -187,7 +226,7 @@
 
             <div class="mt-5 flex flex-wrap gap-2">
               <RouterLink
-                :to="{ name: 'baby-details', params: { babyId: baby.id } }"
+                :to="{ name: 'baby', params: { babyId: baby.id } }"
                 class="btn-muted flex-1 text-center"
               >
                 Ver
@@ -195,14 +234,22 @@
 
               <button
                 type="button"
-                class="flex-1 text-center"
-                :class="isActiveBaby(baby.id)
-                  ? 'btn-muted cursor-not-allowed border-leaf bg-leaf/10 text-forest opacity-70'
-                  : 'btn-primary bg-leaf hover:bg-forest'"
-                :disabled="isActiveBaby(baby.id)"
-                @click="selectBaby(baby)"
+                :disabled="isSelectingBaby || isBabySelected(baby.id)"
+                :class="[
+                  'flex-1 text-center transition-all',
+                  isBabySelected(baby.id)
+                    ? 'cursor-not-allowed rounded-2xl bg-slate-200 px-4 py-3 font-medium text-slate-500 opacity-70'
+                    : 'btn-primary bg-leaf hover:bg-forest'
+                ]"
+                @click="handleSelectBaby(baby)"
               >
-                {{ isActiveBaby(baby.id) ? 'Seleccionado' : 'Seleccionar' }}
+                {{
+                  isBabySelected(baby.id)
+                    ? 'Seleccionado'
+                    : isSelectingBaby && pendingBabyId === baby.id
+                      ? 'Seleccionando...'
+                      : 'Seleccionar'
+                }}
               </button>
 
               <button
@@ -313,35 +360,54 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useBabiesStore } from '../stores/babies'
+import { useAuthStore } from '../stores/auth'
+import { authApi } from '../services/auth'
 import { useToast } from '../composables/toast'
 
 const babiesStore = useBabiesStore()
+const authStore = useAuthStore()
 const toast = useToast()
 
 const showAddBabyModal = ref(false)
 const isSubmitting = ref(false)
+const isSelectingBaby = ref(false)
+const pendingBabyId = ref(null)
+const selectedBabyId = ref(null)
 
 const newBaby = ref({
   name: '',
   birth_date: '',
   sex: '',
   notes: '',
-  photo_url: '',
+  photo_url: ''
 })
 
-onMounted(() => {
-  babiesStore.fetchBabies()
-})
+watch(
+  () => authStore.user?.active_baby_id,
+  (newValue) => {
+    selectedBabyId.value = newValue ?? null
+  },
+  { immediate: true }
+)
 
-function isActiveBaby(babyId) {
-  return babiesStore.activeBabyId === babyId
+async function initializeDashboard() {
+  await Promise.all([
+    babiesStore.fetchBabies(),
+    authStore.fetchCurrentUser()
+  ])
+
+  selectedBabyId.value = authStore.user?.active_baby_id || null
+  babiesStore.setActiveBaby(selectedBabyId.value)
 }
 
-function selectBaby(baby) {
-  babiesStore.setActiveBaby(baby.id)
-  toast.success('Bebé seleccionado', `${baby.name} ahora está activo.`)
+onMounted(() => {
+  initializeDashboard()
+})
+
+function isBabySelected(babyId) {
+  return selectedBabyId.value === babyId
 }
 
 function getAge(birthDate) {
@@ -350,7 +416,9 @@ function getAge(birthDate) {
   const ageInMs = today - birth
 
   const years = Math.floor(ageInMs / (1000 * 60 * 60 * 24 * 365.25))
-  const months = Math.floor((ageInMs % (1000 * 60 * 60 * 24 * 365.25)) / (1000 * 60 * 60 * 24 * 30.44))
+  const months = Math.floor(
+    (ageInMs % (1000 * 60 * 60 * 24 * 365.25)) / (1000 * 60 * 60 * 24 * 30.44)
+  )
 
   if (years > 0) {
     return `${years} año${years > 1 ? 's' : ''}${months > 0 ? ` ${months} mes${months > 1 ? 'es' : ''}` : ''}`
@@ -369,28 +437,52 @@ function formatDate(dateString) {
   return date.toLocaleDateString('es-ES', {
     year: 'numeric',
     month: 'long',
-    day: 'numeric',
+    day: 'numeric'
   })
+}
+
+async function handleSelectBaby(baby) {
+  if (!baby?.id) return
+  if (isBabySelected(baby.id)) return
+
+  isSelectingBaby.value = true
+  pendingBabyId.value = baby.id
+  selectedBabyId.value = baby.id
+  babiesStore.setActiveBaby(baby.id)
+
+  try {
+    await authApi.setActiveBaby(baby.id)
+    await authStore.fetchCurrentUser()
+
+    selectedBabyId.value = authStore.user?.active_baby_id || baby.id
+    babiesStore.setActiveBaby(selectedBabyId.value)
+
+    toast.success('Bebé seleccionado', `${baby.name} ahora está seleccionado.`)
+  } catch (error) {
+    selectedBabyId.value = authStore.user?.active_baby_id || null
+    babiesStore.setActiveBaby(selectedBabyId.value)
+    toast.error('Error', 'No se pudo seleccionar el bebé.')
+  } finally {
+    isSelectingBaby.value = false
+    pendingBabyId.value = null
+  }
 }
 
 async function handleAddBaby() {
   isSubmitting.value = true
 
   try {
-    const createdBaby = await babiesStore.createBaby(newBaby.value)
+    await babiesStore.createBaby(newBaby.value)
+    await babiesStore.fetchBabies()
+
     toast.success('Bebé agregado', 'El perfil fue creado correctamente.')
-
-    if (createdBaby?.id) {
-      babiesStore.setActiveBaby(createdBaby.id)
-    }
-
     showAddBabyModal.value = false
     newBaby.value = {
       name: '',
       birth_date: '',
       sex: '',
       notes: '',
-      photo_url: '',
+      photo_url: ''
     }
   } catch (error) {
     toast.error('Error', babiesStore.error || 'No se pudo crear el bebé.')
@@ -408,6 +500,12 @@ async function confirmDelete(babyId, babyName) {
 
   try {
     await babiesStore.deleteBaby(babyId)
+    await authStore.fetchCurrentUser()
+    await babiesStore.fetchBabies()
+
+    selectedBabyId.value = authStore.user?.active_baby_id || null
+    babiesStore.setActiveBaby(selectedBabyId.value)
+
     toast.success('Bebé eliminado', 'El perfil fue eliminado correctamente.')
   } catch (error) {
     toast.error('Error', babiesStore.error || 'No se pudo eliminar el bebé.')

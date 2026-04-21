@@ -26,7 +26,7 @@ export const babiesApi = {
     },
 
     async setActiveBaby(activeBabyId) {
-        const response = await http.patch("/auth/me/active-baby", { active_baby_id: activeBabyId });
+        const response = await http.patch("/auth/me/active-baby", { baby_id: activeBabyId });
         return response.data;
     },
 };
