@@ -82,6 +82,12 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/eventos',
+      name: 'eventos',
+      component: () => import('../views/EventsView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'not-found',
       component: NotFoundView,

@@ -38,7 +38,7 @@
         <h3 class="mt-6 text-xl font-semibold text-ink">No tienes bebés registrados</h3>
         <p class="mt-2 text-sm text-forest/75">Comienza agregando el perfil de tu primer bebé.</p>
         <RouterLink
-          to="/baby/new"
+          to="/babies/new"
           class="mt-6 inline-flex items-center rounded-lg bg-leaf px-4 py-2 text-sm font-medium text-white hover:bg-leaf/90"
         >
           <svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -102,7 +102,7 @@
               Activar
             </button>
             <RouterLink
-              :to="`/baby/${baby.id}`"
+              :to="`/babies/${baby.id}`"
               class="flex-1 rounded-lg bg-forest/10 px-3 py-2 text-center text-sm font-medium text-forest hover:bg-forest/20"
             >
               Editar
@@ -112,7 +112,7 @@
 
         <!-- Add New Baby Card -->
         <RouterLink
-          to="/baby/new"
+          to="/babies/new"
           class="group flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-sage bg-white/50 p-6 transition-all hover:bg-white/90 hover:shadow-lg"
         >
           <div class="flex h-16 w-16 items-center justify-center rounded-full bg-leaf/10 group-hover:bg-leaf/20">

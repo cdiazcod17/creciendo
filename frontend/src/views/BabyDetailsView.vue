@@ -13,7 +13,7 @@
         </div>
 
         <div class="flex flex-wrap gap-2">
-          <RouterLink to="/dashboard#babies" class="btn-muted">Volver a bebés</RouterLink>
+          <RouterLink to="/babies" class="btn-muted">Volver a bebés</RouterLink>
           <button
             type="button"
             class="btn-primary bg-red-600 hover:bg-red-700"
@@ -35,7 +35,7 @@
 
       <div v-else-if="!baby" class="rounded-3xl border border-sage bg-white/90 p-8 text-center">
         <p class="text-forest">No se encontró el perfil del bebé.</p>
-        <RouterLink to="/bebes" class="btn-primary mt-4 inline-flex">
+        <RouterLink to="/babies" class="btn-primary mt-4 inline-flex">
           Volver a bebés
         </RouterLink>
       </div>
@@ -273,7 +273,7 @@ async function confirmDeleteBaby() {
   try {
     await babiesStore.deleteBaby(baby.value.id)
     toast.success('Bebé eliminado', 'El perfil fue eliminado correctamente.')
-    router.push('/bebes')
+    router.push('/babies')
   } catch (error) {
     toast.error('Error', babiesStore.error || 'No se pudo eliminar el bebé.')
   }

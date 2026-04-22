@@ -8,10 +8,12 @@
           <template v-if="authStore.isAuthenticated">
             <RouterLink class="nav-link" :to="primaryAuthenticatedRoute">{{ primaryAuthenticatedLabel }}</RouterLink>
             <RouterLink v-if="authStore.hasActiveBaby" class="nav-link" to="/eventos">Eventos</RouterLink>
-            <RouterLink v-if="authStore.hasActiveBaby" class="nav-link" to="/citas">Citas</RouterLink>
-            <RouterLink v-if="authStore.hasActiveBaby" class="nav-link" to="/crecimiento">Crecimiento</RouterLink>
-            <RouterLink v-if="authStore.hasActiveBaby" class="nav-link" to="/salud">Salud</RouterLink>
+            <RouterLink v-if="authStore.hasActiveBaby" class="nav-link" to="/appointments">Citas</RouterLink>
             <RouterLink class="nav-link" to="/babies">Bebes</RouterLink>
+            <div v-if="babiesStore.activeBaby" class="ml-2 flex items-center gap-2 rounded-full bg-leaf/10 px-3 py-1 text-xs font-medium text-leaf">
+              <span class="h-1.5 w-1.5 rounded-full bg-leaf animate-pulse"></span>
+              {{ babiesStore.activeBaby.name }}
+            </div>
           </template>
           <template v-else>
             <RouterLink class="nav-link" to="/">Inicio</RouterLink>
@@ -50,10 +52,12 @@
         <template v-if="authStore.isAuthenticated">
           <RouterLink class="nav-link rounded-xl px-2 py-2 hover:bg-mist" :to="primaryAuthenticatedRoute" @click="closeMobileMenu">{{ primaryAuthenticatedLabel }}</RouterLink>
           <RouterLink v-if="authStore.hasActiveBaby" class="nav-link rounded-xl px-2 py-2 hover:bg-mist" to="/eventos" @click="closeMobileMenu">Eventos</RouterLink>
-          <RouterLink v-if="authStore.hasActiveBaby" class="nav-link rounded-xl px-2 py-2 hover:bg-mist" to="/citas" @click="closeMobileMenu">Citas</RouterLink>
-          <RouterLink v-if="authStore.hasActiveBaby" class="nav-link rounded-xl px-2 py-2 hover:bg-mist" to="/crecimiento" @click="closeMobileMenu">Crecimiento</RouterLink>
-          <RouterLink v-if="authStore.hasActiveBaby" class="nav-link rounded-xl px-2 py-2 hover:bg-mist" to="/salud" @click="closeMobileMenu">Salud</RouterLink>
-          <RouterLink class="nav-link rounded-xl px-2 py-2 hover:bg-mist" to="/bebes" @click="closeMobileMenu">Bebes</RouterLink>
+          <RouterLink v-if="authStore.hasActiveBaby" class="nav-link rounded-xl px-2 py-2 hover:bg-mist" to="/appointments" @click="closeMobileMenu">Citas</RouterLink>
+          <RouterLink class="nav-link rounded-xl px-2 py-2 hover:bg-mist" to="/babies" @click="closeMobileMenu">Bebes</RouterLink>
+          <div v-if="babiesStore.activeBaby" class="mt-1 flex items-center gap-2 rounded-xl bg-leaf/10 px-3 py-2 text-sm font-medium text-leaf">
+            <span class="h-1.5 w-1.5 rounded-full bg-leaf animate-pulse"></span>
+            Bebé activo: {{ babiesStore.activeBaby.name }}
+          </div>
         </template>
         <template v-else>
           <RouterLink class="nav-link rounded-xl px-2 py-2 hover:bg-mist" to="/" @click="closeMobileMenu">Inicio</RouterLink>
@@ -63,7 +67,7 @@
 
         <div class="mt-2 grid gap-2">
           <template v-if="authStore.isAuthenticated">
-            <RouterLink class="btn-muted w-full" to="/bebes" @click="closeMobileMenu">Gestionar bebes</RouterLink>
+            <RouterLink class="btn-muted w-full" to="/babies" @click="closeMobileMenu">Gestionar bebes</RouterLink>
             <button class="btn-primary w-full" type="button" @click="handleLogout">Cerrar sesion</button>
           </template>
           <template v-else>
@@ -82,10 +86,12 @@ import { useRouter } from "vue-router";
 
 import AppLogo from "./AppLogo.vue";
 import { useAuthStore } from "../stores/auth";
+import { useBabiesStore } from "../stores/babies";
 import { useToast } from "../composables/toast";
 
 const router = useRouter();
 const authStore = useAuthStore();
+const babiesStore = useBabiesStore();
 const toast = useToast();
 const isMobileMenuOpen = ref(false);
 
