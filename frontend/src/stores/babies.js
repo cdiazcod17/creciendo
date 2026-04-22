@@ -2,6 +2,7 @@ import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 
 import { babiesApi } from "../services/babies";
+import { useAuthStore } from "./auth";
 
 function normalizeApiError(err, fallback) {
   return err?.response?.data?.detail || err?.message || fallback;
@@ -24,20 +25,22 @@ export const useBabiesStore = defineStore("babies", () => {
     isLoading.value = true;
     error.value = null;
 
+    const authStore = useAuthStore();
+
     try {
       const data = await babiesApi.listBabies();
       babies.value = data;
 
-      // Handle active baby selection synchronization
-      const currentId = activeBabyId.value;
-      const validBackendId = userActiveBabyId && data.some((item) => item.id === userActiveBabyId);
-      const validCurrentId = currentId && data.some((item) => item.id === currentId);
+      // Sync activeBabyId with authStore if not already set or invalid
+      const userActiveBabyId = authStore.user?.active_baby_id;
+      const currentValid = activeBabyId.value && data.some(b => b.id === activeBabyId.value);
+      const userValid = userActiveBabyId && data.some(b => b.id === userActiveBabyId);
 
-      if (validBackendId) {
+      if (userValid) {
         activeBabyId.value = userActiveBabyId;
-      } else if (!validCurrentId && data.length > 0) {
+      } else if (!currentValid && data.length > 0) {
         activeBabyId.value = data[0].id;
-      } else if (!validCurrentId) {
+      } else if (!currentValid) {
         activeBabyId.value = null;
       }
 
@@ -81,7 +84,7 @@ export const useBabiesStore = defineStore("babies", () => {
       babies.value = [newBaby, ...babies.value];
 
       if (babies.value.length === 1 && !activeBabyId.value) {
-        activeBabyId.value = newBaby.id;
+        await setActiveBaby(newBaby.id, true);
       }
 
       return newBaby;
@@ -92,20 +95,20 @@ export const useBabiesStore = defineStore("babies", () => {
   }
 
   async function setActiveBaby(babyId, persist = false) {
-    if (!babyId) {
-      activeBabyId.value = null;
-      return;
-    }
-
-    activeBabyId.value = babyId;
-
-    if (persist) {
+    const authStore = useAuthStore();
+    
+    activeBabyId.value = babyId || null;
+    
+    if (persist && babyId) {
       try {
         await babiesApi.setActiveBaby(babyId);
+        authStore.updateActiveBabyId(babyId);
       } catch (err) {
         console.error("Error persisting active baby:", err);
-        // Optionally handle error, maybe keep local selection if it's fine
       }
+    } else if (babyId) {
+       // Just sync local auth state if we are setting it without persistence
+       authStore.updateActiveBabyId(babyId);
     }
   }
 
