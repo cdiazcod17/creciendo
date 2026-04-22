@@ -2,8 +2,9 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
+from uuid import UUID
 
-from sqlalchemy import Boolean, Enum as SQLEnum, ForeignKey, String
+from sqlalchemy import Boolean, Enum as SQLEnum, ForeignKey, String, Uuid
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.enums import Roles
@@ -50,7 +51,8 @@ class User(TimestampedUUIDModel):
         nullable=False,
     )
 
-    active_baby_id: Mapped[str | None] = mapped_column(
+    active_baby_id: Mapped[UUID | None] = mapped_column(
+        Uuid,
         ForeignKey("babies.id", ondelete="SET NULL"),
         nullable=True,
         index=True,

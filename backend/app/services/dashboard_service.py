@@ -1,66 +1,42 @@
-from app.models.baby import Baby
-from app.models.event import Event
+from sqlalchemy.orm import Session
 from app.models.user import User
 from app.services.base import BaseService
-
+from app.repositories.baby_repository import BabyRepository
+from app.repositories.event_repository import EventRepository
 
 class DashboardService(BaseService):
-    def get_user_dashboard(self, current_user: User) -> dict:
-        babies = (
-            self.session.query(Baby)
-            .filter(Baby.user_id == current_user.id)
-            .order_by(Baby.created_at.desc())
-            .all()
-        )
+    def __init__(self, session: Session, baby_repo: BabyRepository, event_repo: EventRepository):
+        super().__init__(session)
+        self.baby_repo = baby_repo
+        self.event_repo = event_repo
 
+    def get_user_dashboard(self, current_user: User) -> dict:
+        babies = self.baby_repo.list_by_user_id(current_user.id)
         baby_ids = [baby.id for baby in babies]
 
-        total_events = 0
-        recent_events = []
+        total_events = self.event_repo.count_by_baby_ids(baby_ids)
+        recent_events_raw = self.event_repo.list_recent_with_baby_name_by_user_id(current_user.id)
 
-        if baby_ids:
-            total_events = (
-                self.session.query(Event)
-                .filter(Event.baby_id.in_(baby_ids))
-                .count()
-            )
-
-            events = (
-                self.session.query(Event, Baby.full_name.label("baby_name"))
-                .join(Baby, Event.baby_id == Baby.id)
-                .filter(Baby.user_id == current_user.id)
-                .order_by(Event.occurred_at.desc())
-                .limit(5)
-                .all()
-            )
-
-            recent_events = [
-                {
-                    "id": event.id,
-                    "baby_id": event.baby_id,
-                    "baby_name": baby_name,
-                    "event_type": event.event_type,
-                    "occurred_at": event.occurred_at,
-                    "amount": event.amount,
-                    "notes": event.notes,
-                }
-                for event, baby_name in events
-            ]
+        recent_events = [
+            {
+                "id": event.id,
+                "baby_id": event.baby_id,
+                "baby_name": baby_name,
+                "event_type": event.event_type,
+                "occurred_at": event.occurred_at,
+                "amount": event.amount,
+                "notes": event.notes,
+            }
+            for event, baby_name in recent_events_raw
+        ]
 
         babies_summary = []
-
         for baby in babies:
-            last_event = (
-                self.session.query(Event)
-                .filter(Event.baby_id == baby.id)
-                .order_by(Event.occurred_at.desc())
-                .first()
-            )
-
+            last_event = self.event_repo.get_latest_by_baby_id(baby.id)
             babies_summary.append(
                 {
                     "id": baby.id,
-                    "full_name": baby.full_name,
+                    "name": baby.name,
                     "last_event": (
                         {
                             "id": last_event.id,

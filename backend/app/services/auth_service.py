@@ -1,6 +1,5 @@
 from sqlalchemy.orm import Session
 from app.services.base import BaseService
-from app.api.deps.auth import get_current_user
 from app.models.user import User
 from app.schemas.user import UserRegister
 from app.core.security import get_password_hash, verify_password, create_access_token
@@ -8,11 +7,15 @@ from datetime import timedelta
 from app.core.config import get_settings
 from jose import jwt
 from app.core.enums import Roles
+from app.repositories.user_repository import UserRepository
 
 class AuthService(BaseService):
+    def __init__(self, session: Session, user_repo: UserRepository):
+        super().__init__(session)
+        self.user_repo = user_repo
+
     def register_user(self, payload: UserRegister) -> User:
-        existing_user = self.session.query(User).filter(User.email == payload.email).first()
-        print(f"Checking email {payload.email}, existing: {existing_user}")
+        existing_user = self.user_repo.get_by_email(payload.email)
         if existing_user:
             raise ValueError("El email ya está registrado")
         
@@ -22,10 +25,10 @@ class AuthService(BaseService):
             hashed_password=get_password_hash(payload.password),
             role=Roles.user
         )
-        return self.add_and_refresh(user)
+        return self.user_repo.add(user)
     
     def authenticate_user(self, email: str, password: str) -> User:
-        user = self.session.query(User).filter(User.email == email).first()
+        user = self.user_repo.get_by_email(email)
         if not user or not verify_password(password, user.hashed_password):
             raise ValueError("Credenciales inválidas")
         if not user.is_active:
@@ -52,7 +55,7 @@ class AuthService(BaseService):
         if payload.get("type") != "refresh":
             raise ValueError("Token inválido")
         
-        user = self.session.query(User).filter(User.email == payload["sub"]).first()
+        user = self.user_repo.get_by_email(payload["sub"])
         if not user:
             raise ValueError("Usuario no encontrado")
         
