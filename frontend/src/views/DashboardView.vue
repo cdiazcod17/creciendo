@@ -363,7 +363,6 @@
 import { ref, onMounted, watch } from 'vue'
 import { useBabiesStore } from '../stores/babies'
 import { useAuthStore } from '../stores/auth'
-import { authApi } from '../services/auth'
 import { useToast } from '../composables/toast'
 
 const babiesStore = useBabiesStore()
@@ -384,10 +383,11 @@ const newBaby = ref({
 })
 
 async function initializeDashboard() {
-  await Promise.all([
-    babiesStore.fetchBabies(),
-    authStore.fetchCurrentUser()
-  ])
+  await authStore.fetchCurrentUser()
+  const userActiveBabyId = authStore.user?.active_baby_id
+  await babiesStore.fetchBabies(userActiveBabyId)
+
+  selectedBabyId.value = babiesStore.activeBabyId
 }
 
 onMounted(() => {
@@ -438,6 +438,9 @@ async function handleSelectBaby(baby) {
 
   try {
     await babiesStore.setActiveBaby(baby.id, true)
+    await authStore.fetchCurrentUser()
+    
+    selectedBabyId.value = babiesStore.activeBabyId
     toast.success('Bebé seleccionado', `${baby.name} ahora está seleccionado.`)
   } catch (error) {
     toast.error('Error', 'No se pudo seleccionar el bebé.')

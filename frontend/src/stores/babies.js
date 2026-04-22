@@ -21,7 +21,7 @@ export const useBabiesStore = defineStore("babies", () => {
 
   const hasBabies = computed(() => babies.value.length > 0);
 
-  async function fetchBabies() {
+  async function fetchBabies(userActiveBabyId = null) {
     isLoading.value = true;
     error.value = null;
 
@@ -31,16 +31,16 @@ export const useBabiesStore = defineStore("babies", () => {
       const data = await babiesApi.listBabies();
       babies.value = data;
 
-      // Sync activeBabyId with authStore if not already set or invalid
-      const userActiveBabyId = authStore.user?.active_baby_id;
-      const currentValid = activeBabyId.value && data.some(b => b.id === activeBabyId.value);
-      const userValid = userActiveBabyId && data.some(b => b.id === userActiveBabyId);
+      // Handle active baby selection synchronization
+      const currentId = activeBabyId.value;
+      const validBackendId = userActiveBabyId && data.some((item) => item.id === userActiveBabyId);
+      const validCurrentId = currentId && data.some((item) => item.id === currentId);
 
-      if (userValid) {
+      if (validBackendId) {
         activeBabyId.value = userActiveBabyId;
-      } else if (!currentValid && data.length > 0) {
+      } else if (!validCurrentId && data.length > 0) {
         activeBabyId.value = data[0].id;
-      } else if (!currentValid) {
+      } else if (!validCurrentId) {
         activeBabyId.value = null;
       }
 
@@ -95,20 +95,20 @@ export const useBabiesStore = defineStore("babies", () => {
   }
 
   async function setActiveBaby(babyId, persist = false) {
-    const authStore = useAuthStore();
-    
-    activeBabyId.value = babyId || null;
-    
-    if (persist && babyId) {
+    if (!babyId) {
+      activeBabyId.value = null;
+      return;
+    }
+
+    activeBabyId.value = babyId;
+
+    if (persist) {
       try {
         await babiesApi.setActiveBaby(babyId);
-        authStore.updateActiveBabyId(babyId);
       } catch (err) {
         console.error("Error persisting active baby:", err);
+        // Optionally handle error, maybe keep local selection if it's fine
       }
-    } else if (babyId) {
-       // Just sync local auth state if we are setting it without persistence
-       authStore.updateActiveBabyId(babyId);
     }
   }
 

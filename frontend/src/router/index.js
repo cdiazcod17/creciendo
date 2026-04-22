@@ -52,6 +52,12 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/baby/:babyId',
+      name: 'baby',
+      component: () => import('../views/BabyDetailsView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/babies/new',
       name: 'baby-create',
       component: () => import('../views/BabyFormView.vue'),
