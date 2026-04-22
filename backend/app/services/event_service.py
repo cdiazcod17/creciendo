@@ -5,6 +5,7 @@ from app.models.event import Event
 from app.schemas.event import EventCreate, EventUpdate
 from app.services.base import BaseService
 from app.repositories.event_repository import EventRepository
+from app.core.enums import EventType
 
 class EventService(BaseService):
     def __init__(self, session: Session, event_repo: EventRepository):
@@ -30,8 +31,14 @@ class EventService(BaseService):
         )
         return self.event_repo.add(event)
 
-    def list_events(self, baby_id: UUID) -> list[Event]:
-        return self.event_repo.list_by_baby_id(baby_id)
+    def list_events(
+        self, 
+        baby_id: UUID, 
+        event_type: EventType | None = None,
+        limit: int = 20,
+        offset: int = 0
+    ) -> list[Event]:
+        return self.event_repo.list_by_baby_id(baby_id, event_type, limit, offset)
 
     def get_event_by_id(self, baby_id: UUID, event_id: UUID) -> Event:
         return self._get_event_in_baby(baby_id, event_id)
