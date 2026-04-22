@@ -20,7 +20,7 @@ export const useBabiesStore = defineStore("babies", () => {
 
   const hasBabies = computed(() => babies.value.length > 0);
 
-  async function fetchBabies() {
+  async function fetchBabies(userActiveBabyId = null) {
     isLoading.value = true;
     error.value = null;
 
@@ -28,12 +28,17 @@ export const useBabiesStore = defineStore("babies", () => {
       const data = await babiesApi.listBabies();
       babies.value = data;
 
-      if (activeBabyId.value && !data.some((item) => item.id === activeBabyId.value)) {
-        activeBabyId.value = null;
-      }
+      // Handle active baby selection synchronization
+      const currentId = activeBabyId.value;
+      const validBackendId = userActiveBabyId && data.some((item) => item.id === userActiveBabyId);
+      const validCurrentId = currentId && data.some((item) => item.id === currentId);
 
-      if (!activeBabyId.value && data.length > 0) {
+      if (validBackendId) {
+        activeBabyId.value = userActiveBabyId;
+      } else if (!validCurrentId && data.length > 0) {
         activeBabyId.value = data[0].id;
+      } else if (!validCurrentId) {
+        activeBabyId.value = null;
       }
 
       return data;
@@ -86,8 +91,22 @@ export const useBabiesStore = defineStore("babies", () => {
     }
   }
 
-  function setActiveBaby(babyId) {
-    activeBabyId.value = babyId || null;
+  async function setActiveBaby(babyId, persist = false) {
+    if (!babyId) {
+      activeBabyId.value = null;
+      return;
+    }
+
+    activeBabyId.value = babyId;
+
+    if (persist) {
+      try {
+        await babiesApi.setActiveBaby(babyId);
+      } catch (err) {
+        console.error("Error persisting active baby:", err);
+        // Optionally handle error, maybe keep local selection if it's fine
+      }
+    }
   }
 
   async function updateBaby(babyId, babyData) {
