@@ -53,4 +53,22 @@ class BabyService(BaseService):
 
     def delete_baby(self, baby_id: UUID, current_user: User) -> None:
         baby = self.get_baby_by_id(baby_id, current_user)
-        self.baby_repo.delete(baby)
+
+        was_active_baby = current_user.active_baby_id == baby.id
+
+        if was_active_baby:
+            replacement_baby = (
+                self.session.query(Baby)
+                .filter(
+                    Baby.user_id == current_user.id,
+                    Baby.id != baby.id,
+                )
+                .order_by(Baby.created_at.asc())
+                .first()
+            )
+
+            current_user.active_baby_id = replacement_baby.id if replacement_baby else None
+            self.session.add(current_user)
+
+        self.session.delete(baby)
+        self.session.commit()
