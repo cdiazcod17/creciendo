@@ -34,6 +34,13 @@ export const useAuthStore = defineStore("auth", () => {
     localStorage.removeItem("user");
   }
 
+  function updateActiveBabyId(babyId) {
+    if (user.value) {
+      user.value.active_baby_id = babyId;
+      localStorage.setItem("user", JSON.stringify(user.value));
+    }
+  }
+
   function clearSession() {
     user.value = null;
     localStorage.removeItem("access_token");

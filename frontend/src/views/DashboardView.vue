@@ -224,13 +224,13 @@
               <p class="line-clamp-2 text-xs text-forest/75">{{ baby.notes }}</p>
             </div>
 
-            <div class="mt-5 flex flex-wrap gap-2">
-              <RouterLink
-                :to="{ name: 'baby', params: { babyId: baby.id } }"
-                class="btn-muted flex-1 text-center"
-              >
-                Ver
-              </RouterLink>
+              <div class="mt-5 flex flex-wrap gap-2">
+                <RouterLink
+                  :to="{ name: 'baby-details', params: { babyId: baby.id } }"
+                  class="btn-muted flex-1 text-center"
+                >
+                  Ver
+                </RouterLink>
 
               <button
                 type="button"
@@ -374,7 +374,6 @@ const showAddBabyModal = ref(false)
 const isSubmitting = ref(false)
 const isSelectingBaby = ref(false)
 const pendingBabyId = ref(null)
-const selectedBabyId = ref(null)
 
 const newBaby = ref({
   name: '',
@@ -384,22 +383,11 @@ const newBaby = ref({
   photo_url: ''
 })
 
-watch(
-  () => authStore.user?.active_baby_id,
-  (newValue) => {
-    selectedBabyId.value = newValue ?? null
-  },
-  { immediate: true }
-)
-
 async function initializeDashboard() {
   await Promise.all([
     babiesStore.fetchBabies(),
     authStore.fetchCurrentUser()
   ])
-
-  selectedBabyId.value = authStore.user?.active_baby_id || null
-  babiesStore.setActiveBaby(selectedBabyId.value)
 }
 
 onMounted(() => {
@@ -407,7 +395,7 @@ onMounted(() => {
 })
 
 function isBabySelected(babyId) {
-  return selectedBabyId.value === babyId
+  return babiesStore.activeBabyId === babyId
 }
 
 function getAge(birthDate) {
@@ -447,20 +435,11 @@ async function handleSelectBaby(baby) {
 
   isSelectingBaby.value = true
   pendingBabyId.value = baby.id
-  selectedBabyId.value = baby.id
-  babiesStore.setActiveBaby(baby.id)
 
   try {
-    await authApi.setActiveBaby(baby.id)
-    await authStore.fetchCurrentUser()
-
-    selectedBabyId.value = authStore.user?.active_baby_id || baby.id
-    babiesStore.setActiveBaby(selectedBabyId.value)
-
+    await babiesStore.setActiveBaby(baby.id, true)
     toast.success('Bebé seleccionado', `${baby.name} ahora está seleccionado.`)
   } catch (error) {
-    selectedBabyId.value = authStore.user?.active_baby_id || null
-    babiesStore.setActiveBaby(selectedBabyId.value)
     toast.error('Error', 'No se pudo seleccionar el bebé.')
   } finally {
     isSelectingBaby.value = false
@@ -502,9 +481,6 @@ async function confirmDelete(babyId, babyName) {
     await babiesStore.deleteBaby(babyId)
     await authStore.fetchCurrentUser()
     await babiesStore.fetchBabies()
-
-    selectedBabyId.value = authStore.user?.active_baby_id || null
-    babiesStore.setActiveBaby(selectedBabyId.value)
 
     toast.success('Bebé eliminado', 'El perfil fue eliminado correctamente.')
   } catch (error) {
