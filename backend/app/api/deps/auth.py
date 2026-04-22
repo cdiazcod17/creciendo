@@ -1,16 +1,20 @@
 from fastapi import HTTPException,status,Depends
 from fastapi.security import OAuth2PasswordBearer
-from app.db.session import get_db
 from app.models.user import User
-from sqlalchemy.orm import Session
 from jose import jwt,JWTError
 from app.core.config import get_settings
 from app.core.enums import Roles
 
+from app.repositories.user_repository import UserRepository
+from app.api.deps.services import get_user_repository
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/login")
 settings = get_settings()
 
-def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+def get_current_user(
+    token: str = Depends(oauth2_scheme),
+    user_repo: UserRepository = Depends(get_user_repository)
+):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="No se pudo validar credenciales",
@@ -24,7 +28,7 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
     except JWTError:
         raise credentials_exception
     
-    user = db.query(User).filter(User.email == email).first()
+    user = user_repo.get_by_email(email)
     if user is None:
         raise credentials_exception
     return user

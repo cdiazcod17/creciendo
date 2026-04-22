@@ -18,7 +18,7 @@ class DashboardLastEvent(BaseModel):
 
 class DashboardBabyItem(BaseModel):
     id: UUID
-    full_name: str
+    name: str
     last_event: DashboardLastEvent | None = None
 
     model_config = ConfigDict(from_attributes=True)

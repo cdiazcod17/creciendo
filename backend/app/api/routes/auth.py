@@ -1,11 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel
-from sqlalchemy.orm import Session
 
 from app.api.deps.auth import get_current_active_user
-from app.api.deps.services import get_auth_service
-from app.db.session import get_db
+from app.api.deps.services import get_auth_service, get_baby_context_service
 from app.models.user import User
 from app.schemas.user import UserRegister, UserRead
 from app.schemas.user_context import SetActiveBabyRequest
@@ -79,9 +77,8 @@ def read_users_me(
 def set_active_baby(
     payload: SetActiveBabyRequest,
     current_user: User = Depends(get_current_active_user),
-    db: Session = Depends(get_db),
+    service: BabyContextService = Depends(get_baby_context_service),
 ):
-    service = BabyContextService(db)
     user = service.set_active_baby(
         user=current_user,
         baby_id=payload.baby_id,

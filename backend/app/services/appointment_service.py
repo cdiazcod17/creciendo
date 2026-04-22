@@ -1,58 +1,26 @@
-from datetime import datetime,timezone
 from uuid import UUID
-
 from fastapi import HTTPException, status
-
+from sqlalchemy.orm import Session
 from app.models.appointment import Appointment
-from app.models.baby import Baby
-from app.models.user import User
 from app.schemas.appointment import AppointmentCreate, AppointmentUpdate
 from app.services.base import BaseService
-from app.core.enums import AppointmentStatus
-
+from app.repositories.appointment_repository import AppointmentRepository
 
 class AppointmentService(BaseService):
-    def _get_owned_baby(self, baby_id: UUID, current_user: User) -> Baby:
-        baby = (
-            self.session.query(Baby)
-            .filter(
-                Baby.id == baby_id,
-                Baby.user_id == current_user.id,
-            )
-            .first()
-        )
+    def __init__(self, session: Session, appointment_repo: AppointmentRepository):
+        super().__init__(session)
+        self.appointment_repo = appointment_repo
 
-        if not baby:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Bebé no encontrado",
-            )
-
-        return baby
-
-    def _get_appointment(self, baby_id: UUID, appointment_id: UUID, current_user: User) -> Appointment:
-        self._get_owned_baby(baby_id, current_user)
-
-        appointment = (
-            self.session.query(Appointment)
-            .filter(
-                Appointment.id == appointment_id,
-                Appointment.baby_id == baby_id,
-            )
-            .first()
-        )
-
+    def _get_appointment(self, baby_id: UUID, appointment_id: UUID) -> Appointment:
+        appointment = self.appointment_repo.get_by_id_and_baby_id(appointment_id, baby_id)
         if not appointment:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Cita no encontrada",
             )
-
         return appointment
 
-    def create_appointment(self, baby_id: UUID, payload: AppointmentCreate, current_user: User) -> Appointment:
-        self._get_owned_baby(baby_id, current_user)
-
+    def create_appointment(self, baby_id: UUID, payload: AppointmentCreate) -> Appointment:
         appointment = Appointment(
             baby_id=baby_id,
             title=payload.title,
@@ -62,48 +30,24 @@ class AppointmentService(BaseService):
             location=payload.location,
             notes=payload.notes,
         )
+        return self.appointment_repo.add(appointment)
 
-        self.session.add(appointment)
-        self.session.commit()
-        self.session.refresh(appointment)
-        return appointment
+    def list_appointments(self, baby_id: UUID) -> list[Appointment]:
+        return self.appointment_repo.list_by_baby_id(baby_id)
 
-    def list_appointments(self, baby_id: UUID, current_user: User) -> list[Appointment]:
-        self._get_owned_baby(baby_id, current_user)
+    def get_next_appointment(self, baby_id: UUID) -> Appointment | None:
+        return self.appointment_repo.get_next_by_baby_id(baby_id)
 
-        return (
-            self.session.query(Appointment)
-            .filter(Appointment.baby_id == baby_id)
-            .order_by(Appointment.scheduled_at.desc())
-            .all()
-        )
-
-    def get_next_appointment(self, baby_id: UUID, current_user: User) -> Appointment | None:
-        self._get_owned_baby(baby_id, current_user)
-
-        return (
-            self.session.query(Appointment)
-            .filter(
-                Appointment.baby_id == baby_id,
-                Appointment.scheduled_at >= datetime.now(timezone.utc),
-                Appointment.status == AppointmentStatus.scheduled,
-            )
-            .order_by(Appointment.scheduled_at.asc())
-            .first()
-        )
-
-    def get_appointment_by_id(self, baby_id: UUID, appointment_id: UUID, current_user: User) -> Appointment:
-        return self._get_appointment(baby_id, appointment_id, current_user)
+    def get_appointment_by_id(self, baby_id: UUID, appointment_id: UUID) -> Appointment:
+        return self._get_appointment(baby_id, appointment_id)
 
     def update_appointment(
         self,
         baby_id: UUID,
         appointment_id: UUID,
         payload: AppointmentUpdate,
-        current_user: User,
     ) -> Appointment:
-        appointment = self._get_appointment(baby_id, appointment_id, current_user)
-
+        appointment = self._get_appointment(baby_id, appointment_id)
         update_data = payload.model_dump(exclude_unset=True)
 
         if not update_data:
@@ -115,12 +59,9 @@ class AppointmentService(BaseService):
         for field, value in update_data.items():
             setattr(appointment, field, value)
 
-        self.session.commit()
-        self.session.refresh(appointment)
+        self.appointment_repo.update()
         return appointment
 
-    def delete_appointment(self, baby_id: UUID, appointment_id: UUID, current_user: User) -> None:
-        appointment = self._get_appointment(baby_id, appointment_id, current_user)
-
-        self.session.delete(appointment)
-        self.session.commit()
+    def delete_appointment(self, baby_id: UUID, appointment_id: UUID) -> None:
+        appointment = self._get_appointment(baby_id, appointment_id)
+        self.appointment_repo.delete(appointment)
