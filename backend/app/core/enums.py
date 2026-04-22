@@ -16,6 +16,8 @@ class EventType(str, enum.Enum):
     sleep = "sleep"
     diaper = "diaper"
     bath = "bath"
+    medication = "medication"
+    note = "note"
     
 class AppointmentStatus(str, enum.Enum):
     scheduled = "scheduled"

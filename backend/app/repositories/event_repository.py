@@ -3,20 +3,28 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select, func
 from app.models.event import Event
 from app.models.baby import Baby
+from app.core.enums import EventType
 from .base import BaseRepository
 
 class EventRepository(BaseRepository[Event]):
     def __init__(self, session: Session):
         super().__init__(Event, session)
 
-    def list_by_baby_id(self, baby_id: UUID) -> list[Event]:
-        return list(
-            self.session.execute(
-                select(Event)
-                .where(Event.baby_id == baby_id)
-                .order_by(Event.occurred_at.desc())
-            ).scalars().all()
-        )
+    def list_by_baby_id(
+        self, 
+        baby_id: UUID, 
+        event_type: EventType | None = None,
+        limit: int = 20,
+        offset: int = 0
+    ) -> list[Event]:
+        stmt = select(Event).where(Event.baby_id == baby_id)
+        
+        if event_type:
+            stmt = stmt.where(Event.event_type == event_type)
+            
+        stmt = stmt.order_by(Event.occurred_at.desc()).offset(offset).limit(limit)
+        
+        return list(self.session.execute(stmt).scalars().all())
 
     def get_by_id_and_baby_id(self, event_id: UUID, baby_id: UUID) -> Event | None:
         return self.session.execute(
