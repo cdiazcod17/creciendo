@@ -132,8 +132,10 @@
 import { onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useBabiesStore } from '../stores/babies'
+import { useToast } from '../composables/toast'
 
 const babiesStore = useBabiesStore()
+const toast = useToast()
 
 const fetchBabies = async () => {
   try {
@@ -145,9 +147,11 @@ const fetchBabies = async () => {
 
 const setActiveBaby = async (babyId) => {
   try {
-    await babiesStore.setActiveBaby(babyId)
+    await babiesStore.setActiveBaby(babyId, true)
+    toast.success('Bebé activo', 'La selección del bebé ha sido guardada.')
   } catch (error) {
     console.error('Error setting active baby:', error)
+    toast.error('Error', 'No se pudo guardar la selección del bebé.')
   }
 }
 
