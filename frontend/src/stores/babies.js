@@ -9,7 +9,7 @@ function normalizeError(error, fallback) {
 export const useBabiesStore = defineStore('babies', () => {
   const babies = ref([])
   const baby = ref(null)
-  const activeBabyId = ref(null)
+  const activeBabyId = ref(localStorage.getItem('activeBabyId'))
   const isLoading = ref(false)
   const error = ref(null)
 
@@ -22,6 +22,7 @@ export const useBabiesStore = defineStore('babies', () => {
   function ensureActiveBaby() {
     if (!babies.value.length) {
       activeBabyId.value = null
+      localStorage.removeItem('activeBabyId')
       return
     }
 
@@ -29,6 +30,7 @@ export const useBabiesStore = defineStore('babies', () => {
 
     if (!activeBabyId.value || !exists) {
       activeBabyId.value = babies.value[0].id
+      localStorage.setItem('activeBabyId', activeBabyId.value)
     }
   }
 
@@ -98,6 +100,7 @@ export const useBabiesStore = defineStore('babies', () => {
     try {
       await babiesApi.setActiveBaby(babyId)
       activeBabyId.value = babyId
+      localStorage.setItem('activeBabyId', babyId)
     } catch (err) {
       error.value = normalizeError(err, 'Error al cambiar bebé activo')
       throw err
