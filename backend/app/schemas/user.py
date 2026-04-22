@@ -24,4 +24,5 @@ class UserRead(BaseModel):
     email: EmailStr
     is_active: bool
     role: Roles
+    active_baby_id: uuid.UUID | None = None
     model_config = ConfigDict(from_attributes=True)
