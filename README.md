@@ -54,6 +54,7 @@ El proyecto sigue una separación clara de responsabilidades para facilitar el m
 
 ---
 
+<<<<<<< HEAD
 ## 5. Estructura del Repositorio
 
 ```bash
@@ -85,6 +86,33 @@ creciendo-app/
 ---
 
 ## 6. Reglas de Dominio e Integridad
+=======
+
+  5. Estructura del Repositorio
+    1 creciendo-app/
+    2 ├── backend/                # API y lógica de servidor
+    3 │   ├── app/
+    4 │   │   ├── api/            # Rutas y dependencias de FastAPI
+    5 │   │   ├── core/           # Configuración, seguridad y enums
+    6 │   │   ├── db/             # Sesión y base de datos
+    7 │   │   ├── models/         # Entidades de SQLAlchemy
+    8 │   │   ├── repositories/   # Capa de persistencia
+    9 │   │   ├── schemas/        # Modelos de validación (Pydantic)
+   10 │   │   └── services/       # Lógica de negocio
+   11 │   ├── alembic/            # Migraciones de base de datos
+   12 │   ├── tests/              # Pruebas unitarias y de integración
+   13 │   └── main.py             # Punto de entrada de la aplicación
+   14 ├── frontend/               # Aplicación Vue.js
+   15 │   ├── src/
+   16 │   │   ├── components/     # Componentes reutilizables
+   17 │   │   ├── composables/    # Lógica reactiva extraída
+   18 │   │   ├── router/         # Configuración de Vue Router
+   19 │   │   ├── services/       # Llamadas a la API
+   20 │   │   ├── stores/         # Estados globales (Pinia)
+   21 │   │   └── views/          # Páginas principales
+   22 │   └── tailwind.config.js  # Configuración de estilos
+  ---
+>>>>>>> bffe7d518a7d4382c8810eb1b90339d8463cf79a
 
 *   **Propiedad de los datos:** Un usuario solo puede acceder a la información de los bebés que ha registrado personalmente.
 *   **Contexto de Bebé Activo:** La UI opera siempre bajo el contexto de un "Bebé Activo". Si un usuario no tiene bebés, el sistema le guiará para crear el primero.
@@ -197,5 +225,38 @@ Para mantener la integridad y calidad del código:
 2.  Validar que `npm run lint` no devuelva errores antes de realizar un Commit.
 3.  Asegurarse de que las nuevas funcionalidades respeten el flujo `router -> service -> repository`.
 
+<<<<<<< HEAD
 ---
 *Nota: Este proyecto está en desarrollo activo. Algunas funcionalidades pueden sufrir cambios estructurales mientras se completa la visión final del MVP.*
+=======
+  10. Testing
+  Se incluyen pruebas automatizadas para el backend utilizando pytest. El enfoque principal es la validación de seguridad y ownership.
+
+   * Ejecutar pruebas:
+
+   1     cd backend
+   2     pytest
+   * Cobertura actual: Autenticación de usuarios, validación de pertenencia de recursos (Ownership) y sincronización del bebé activo.
+
+  ---
+
+  11. Estado Actual y Siguientes Pasos
+  El proyecto se encuentra en una fase avanzada de su MVP, con los módulos de Autenticación, Dashboard, Bebés, Citas y Eventos operativos.
+
+  Próximas mejoras:
+   * Implementación de gráficas de crecimiento (curvas de la OMS).
+   * Módulo extendido de notas de salud.
+   * Exportación de reportes en PDF para pediatras.
+   * Optimización de carga de imágenes para fotos de perfil.
+   * Modulo Hitos de bebe
+
+  ---
+
+  12. Contribución
+  Para mantener la calidad del código, se recomienda:
+   1. Crear ramas descriptivas (feature/nombre-funcionalidad o fix/descripcion-error).
+   2. Asegurarse de que npm run lint no devuelva errores antes de enviar un PR.
+   3. Asegurarse de que todos los servicios y stores sigan el patrón de diseño establecido.
+
+  ---
+>>>>>>> bffe7d518a7d4382c8810eb1b90339d8463cf79a
