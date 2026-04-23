@@ -302,8 +302,9 @@ const resolvedBabyId = computed(() => {
 const baby = computed(() => babiesStore.baby);
 
 const filteredEvents = computed(() => {
-  if (activeFilter.value === 'all') return eventsStore.events;
-  return eventsStore.events.filter(e => e.event_type === activeFilter.value);
+  const allEvents = eventsStore.events || [];
+  if (activeFilter.value === 'all') return allEvents;
+  return allEvents.filter(e => e.event_type === activeFilter.value);
 });
 
 // Helpers

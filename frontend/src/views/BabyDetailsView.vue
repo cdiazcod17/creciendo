@@ -13,7 +13,7 @@
         </div>
 
         <div class="flex flex-wrap gap-2">
-          <RouterLink to="/babies" class="btn-muted">Volver a bebés</RouterLink>
+          <RouterLink to="/dashboard#babies-section" class="btn-muted">Volver a bebés</RouterLink>
           <button
             type="button"
             class="btn-primary bg-red-600 hover:bg-red-700"
