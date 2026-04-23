@@ -1,37 +1,82 @@
 import { ref, computed } from "vue";
 import { defineStore } from "pinia";
 import { eventsApi } from "../services/events";
+import { useBabiesStore } from "./babies";
 
 function normalizeApiError(err, fallback) {
   return err?.response?.data?.detail || err?.message || fallback;
 }
 
 export const useEventsStore = defineStore("events", () => {
-  const events = ref([]);
+  const babiesStore = useBabiesStore();
+  
+  // Mapa para cachear eventos por bebé: { babyId: [eventos] }
+  const eventsByBaby = ref({});
   const isLoading = ref(false);
   const error = ref(null);
 
+  // ALIAS RETROCOMPATIBLE: Expone los eventos del bebé seleccionado actualmente
+  const events = computed(() => {
+    const id = babiesStore.activeBabyId;
+    return id ? (eventsByBaby.value[id] || []) : [];
+  });
+
+  // Getters de filtrado (restaurados para compatibilidad)
   const feedingEvents = computed(() => events.value.filter(e => e.event_type === "feeding"));
   const sleepEvents = computed(() => events.value.filter(e => e.event_type === "sleep"));
   const diaperEvents = computed(() => events.value.filter(e => e.event_type === "diaper"));
 
+  /**
+   * Obtiene el último registro de cada tipo de evento para un bebé específico.
+   * Usado en las tarjetas del Dashboard.
+   */
+  const getLatestEventsByType = (babyId) => {
+    const list = eventsByBaby.value[babyId] || [];
+    const latest = {};
+    
+    // Orden descendente por fecha
+    const sorted = [...list].sort((a, b) => new Date(b.occurred_at) - new Date(a.occurred_at));
+    
+    sorted.forEach(event => {
+      if (!latest[event.event_type]) {
+        latest[event.event_type] = event;
+      }
+    });
+    
+    return Object.values(latest).sort((a, b) => new Date(b.occurred_at) - new Date(a.occurred_at));
+  };
+
   async function fetchEvents(babyId, params = {}) {
-    if (!babyId) {
-      events.value = [];
-      return [];
-    }
+    if (!babyId) return [];
     
     isLoading.value = true;
     error.value = null;
 
     try {
       const data = await eventsApi.listEvents(babyId, params);
-      events.value = data;
+      eventsByBaby.value[babyId] = data;
       return data;
     } catch (err) {
       error.value = normalizeApiError(err, "Error al cargar eventos");
-      console.error("Error fetching events:", err);
       throw err;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  /**
+   * Carga masiva para el Dashboard (optimiza peticiones concurrentes)
+   */
+  async function fetchEventsForMultipleBabies(babies) {
+    if (!babies || babies.length === 0) return;
+    
+    isLoading.value = true;
+    try {
+      await Promise.all(
+        babies.map(baby => fetchEvents(baby.id, { limit: 15 }))
+      );
+    } catch (err) {
+      console.error("Error en carga agregada de eventos", err);
     } finally {
       isLoading.value = false;
     }
@@ -41,7 +86,6 @@ export const useEventsStore = defineStore("events", () => {
     error.value = null;
     try {
       const newEvent = await eventsApi.createEvent(babyId, eventData);
-      // Re-fetch or add to list (re-fetch is safer for ordering)
       await fetchEvents(babyId);
       return newEvent;
     } catch (err) {
@@ -66,7 +110,9 @@ export const useEventsStore = defineStore("events", () => {
     error.value = null;
     try {
       await eventsApi.deleteEvent(babyId, eventId);
-      events.value = events.value.filter(e => e.id !== eventId);
+      if (eventsByBaby.value[babyId]) {
+        eventsByBaby.value[babyId] = eventsByBaby.value[babyId].filter(e => e.id !== eventId);
+      }
     } catch (err) {
       error.value = normalizeApiError(err, "Error al eliminar evento");
       throw err;
@@ -75,12 +121,15 @@ export const useEventsStore = defineStore("events", () => {
 
   return {
     events,
+    eventsByBaby,
     isLoading,
     error,
     feedingEvents,
     sleepEvents,
     diaperEvents,
+    getLatestEventsByType,
     fetchEvents,
+    fetchEventsForMultipleBabies,
     createEvent,
     updateEvent,
     deleteEvent,
