@@ -197,38 +197,3 @@ Para mantener la integridad y calidad del código:
 2.  Validar que `npm run lint` no devuelva errores antes de realizar un Commit.
 3.  Asegurarse de que las nuevas funcionalidades respeten el flujo `router -> service -> repository`.
 
-<<<<<<< HEAD
----
-*Nota: Este proyecto está en desarrollo activo. Algunas funcionalidades pueden sufrir cambios estructurales mientras se completa la visión final del MVP.*
-=======
-  10. Testing
-  Se incluyen pruebas automatizadas para el backend utilizando pytest. El enfoque principal es la validación de seguridad y ownership.
-
-   * Ejecutar pruebas:
-
-   1     cd backend
-   2     pytest
-   * Cobertura actual: Autenticación de usuarios, validación de pertenencia de recursos (Ownership) y sincronización del bebé activo.
-
-  ---
-
-  11. Estado Actual y Siguientes Pasos
-  El proyecto se encuentra en una fase avanzada de su MVP, con los módulos de Autenticación, Dashboard, Bebés, Citas y Eventos operativos.
-
-  Próximas mejoras:
-   * Implementación de gráficas de crecimiento (curvas de la OMS).
-   * Módulo extendido de notas de salud.
-   * Exportación de reportes en PDF para pediatras.
-   * Optimización de carga de imágenes para fotos de perfil.
-   * Modulo Hitos de bebe
-
-  ---
-
-  12. Contribución
-  Para mantener la calidad del código, se recomienda:
-   1. Crear ramas descriptivas (feature/nombre-funcionalidad o fix/descripcion-error).
-   2. Asegurarse de que npm run lint no devuelva errores antes de enviar un PR.
-   3. Asegurarse de que todos los servicios y stores sigan el patrón de diseño establecido.
-
-  ---
->>>>>>> bffe7d518a7d4382c8810eb1b90339d8463cf79a
