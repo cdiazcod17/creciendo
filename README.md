@@ -54,7 +54,6 @@ El proyecto sigue una separación clara de responsabilidades para facilitar el m
 
 ---
 
-<<<<<<< HEAD
 ## 5. Estructura del Repositorio
 
 ```bash
@@ -86,33 +85,6 @@ creciendo-app/
 ---
 
 ## 6. Reglas de Dominio e Integridad
-=======
-
-  5. Estructura del Repositorio
-    1 creciendo-app/
-    2 ├── backend/                # API y lógica de servidor
-    3 │   ├── app/
-    4 │   │   ├── api/            # Rutas y dependencias de FastAPI
-    5 │   │   ├── core/           # Configuración, seguridad y enums
-    6 │   │   ├── db/             # Sesión y base de datos
-    7 │   │   ├── models/         # Entidades de SQLAlchemy
-    8 │   │   ├── repositories/   # Capa de persistencia
-    9 │   │   ├── schemas/        # Modelos de validación (Pydantic)
-   10 │   │   └── services/       # Lógica de negocio
-   11 │   ├── alembic/            # Migraciones de base de datos
-   12 │   ├── tests/              # Pruebas unitarias y de integración
-   13 │   └── main.py             # Punto de entrada de la aplicación
-   14 ├── frontend/               # Aplicación Vue.js
-   15 │   ├── src/
-   16 │   │   ├── components/     # Componentes reutilizables
-   17 │   │   ├── composables/    # Lógica reactiva extraída
-   18 │   │   ├── router/         # Configuración de Vue Router
-   19 │   │   ├── services/       # Llamadas a la API
-   20 │   │   ├── stores/         # Estados globales (Pinia)
-   21 │   │   └── views/          # Páginas principales
-   22 │   └── tailwind.config.js  # Configuración de estilos
-  ---
->>>>>>> bffe7d518a7d4382c8810eb1b90339d8463cf79a
 
 *   **Propiedad de los datos:** Un usuario solo puede acceder a la información de los bebés que ha registrado personalmente.
 *   **Contexto de Bebé Activo:** La UI opera siempre bajo el contexto de un "Bebé Activo". Si un usuario no tiene bebés, el sistema le guiará para crear el primero.
