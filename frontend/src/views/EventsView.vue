@@ -1,7 +1,6 @@
 <template>
   <div class="min-h-screen bg-paper py-10">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <!-- Header -->
       <div class="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p class="section-kicker">Historial</p>
@@ -30,8 +29,7 @@
       </div>
 
       <!-- Main Content -->
-      <div v-else>
-        <!-- Loading / Error -->
+      <div v-else>        
         <div
           v-if="isBootstrapping || babiesStore.isLoading || eventsStore.isLoading"
           class="rounded-3xl bg-white/90 p-8 text-center shadow-sm"
@@ -48,7 +46,7 @@
         </div>
 
         <div v-else>
-          <!-- Quick Actions & Baby Summary -->
+          
           <div class="grid gap-6 lg:grid-cols-[1fr_1.5fr]">
             <!-- Baby Summary -->
             <section class="card rounded-4xl p-6 h-fit">
@@ -72,8 +70,7 @@
                  </div>
               </div>
             </section>
-
-            <!-- Quick Entry -->
+            
             <section class="card rounded-4xl p-6">
               <div class="flex items-center justify-between mb-6">
                 <div>
@@ -97,16 +94,14 @@
               </div>
             </section>
           </div>
-
-          <!-- History & Filters -->
+          
           <section class="mt-8 rounded-4xl border border-sage bg-white/90 p-6">
             <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between mb-8">
               <div>
                 <p class="section-kicker">Cronología</p>
                 <h2 class="mt-2 text-2xl font-semibold text-ink">Historial de eventos</h2>
               </div>
-
-              <!-- Filter Tabs -->
+              
               <div class="flex bg-mist p-1 rounded-2xl overflow-x-auto no-scrollbar">
                 <button 
                   @click="activeFilter = 'all'"
@@ -126,8 +121,7 @@
                 </button>
               </div>
             </div>
-
-            <!-- Events List -->
+            
             <div v-if="filteredEvents.length === 0" class="py-12 text-center">
               <div class="h-16 w-16 bg-mist rounded-full flex items-center justify-center mx-auto text-forest/30 mb-4">
                 <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -144,12 +138,10 @@
                 :key="event.id"
                 class="group relative flex items-start gap-4 p-5 rounded-3xl border border-sage bg-white hover:shadow-md transition-all"
               >
-                <!-- Icon -->
                 <div :class="getTypeColor(event.event_type)" class="flex-shrink-0 h-12 w-12 rounded-2xl flex items-center justify-center">
                   <component :is="getTypeIcon(event.event_type)" class="h-6 w-6" />
                 </div>
 
-                <!-- Info -->
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center justify-between mb-1">
                     <h3 class="font-semibold text-ink text-sm">
@@ -170,7 +162,7 @@
                   </p>
                 </div>
 
-                <!-- Actions (Hover) -->
+                
                 <div class="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button @click="editEvent(event)" class="p-2 text-forest/60 hover:text-leaf hover:bg-leaf/10 rounded-lg transition-colors">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -190,7 +182,6 @@
       </div>
     </div>
 
-    <!-- Event Modal Form -->
     <div v-if="showEventForm" class="fixed inset-0 z-50 bg-slate-900/40 px-4 py-6 flex items-center justify-center">
       <div class="w-full max-w-lg rounded-3xl bg-white p-6 shadow-2xl animate-in fade-in zoom-in duration-200">
         <div class="flex items-start justify-between mb-6">
@@ -252,20 +243,32 @@
 </template>
 
 <script setup>
-import { computed, reactive, ref, watch, onMounted, markRaw } from "vue";
+import { computed, reactive, ref, watch, onMounted, markRaw, h } from "vue";
 import { useRoute } from "vue-router";
 import { useAuthStore } from "../stores/auth";
 import { useBabiesStore } from "../stores/babies";
 import { useEventsStore } from "../stores/events";
 import { useToast } from "../composables/toast";
 
-// Icons (using inline SVGs for simplicity and avoiding dependency issues)
-const IconFeeding = { template: '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M3 12H2m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>' };
-const IconSleep = { template: '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>' };
-const IconDiaper = { template: '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>' };
-const IconBath = { template: '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>' };
-const IconMed = { template: '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" /></svg>' };
-const IconNote = { template: '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>' };
+// Icons as functional components to avoid runtime compiler dependency
+const IconFeeding = (props) => h('svg', { ...props, fill: 'none', viewBox: '0 0 24 24', stroke: 'currentColor' }, [
+  h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '2', d: 'M12 3v1m0 16v1m9-9h-1M3 12H2m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z' })
+]);
+const IconSleep = (props) => h('svg', { ...props, fill: 'none', viewBox: '0 0 24 24', stroke: 'currentColor' }, [
+  h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '2', d: 'M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z' })
+]);
+const IconDiaper = (props) => h('svg', { ...props, fill: 'none', viewBox: '0 0 24 24', stroke: 'currentColor' }, [
+  h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '2', d: 'M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z' })
+]);
+const IconBath = (props) => h('svg', { ...props, fill: 'none', viewBox: '0 0 24 24', stroke: 'currentColor' }, [
+  h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '2', d: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' })
+]);
+const IconMed = (props) => h('svg', { ...props, fill: 'none', viewBox: '0 0 24 24', stroke: 'currentColor' }, [
+  h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '2', d: 'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2' })
+]);
+const IconNote = (props) => h('svg', { ...props, fill: 'none', viewBox: '0 0 24 24', stroke: 'currentColor' }, [
+  h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '2', d: 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z' })
+]);
 
 const route = useRoute();
 const authStore = useAuthStore();

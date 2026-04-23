@@ -110,6 +110,7 @@ export const useAuthStore = defineStore("auth", () => {
     register,
     login,
     fetchCurrentUser,
+    updateActiveBabyId,
     hydrateFromStorage,
     logout,
     clearSession,

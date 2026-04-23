@@ -21,7 +21,7 @@ export const useBabiesStore = defineStore("babies", () => {
 
   const hasBabies = computed(() => babies.value.length > 0);
 
-  async function fetchBabies(userActiveBabyId = null) {
+  async function fetchBabies() {
     isLoading.value = true;
     error.value = null;
 
@@ -32,12 +32,12 @@ export const useBabiesStore = defineStore("babies", () => {
       babies.value = data;
 
       // Sync activeBabyId with authStore if not already set or invalid
-      const userActiveBabyId = authStore.user?.active_baby_id;
+      const userActiveId = authStore.user?.active_baby_id;
       const currentValid = activeBabyId.value && data.some(b => b.id === activeBabyId.value);
-      const userValid = userActiveBabyId && data.some(b => b.id === userActiveBabyId);
+      const userValid = userActiveId && data.some(b => b.id === userActiveId);
 
       if (userValid) {
-        activeBabyId.value = userActiveBabyId;
+        activeBabyId.value = userActiveId;
       } else if (!currentValid && data.length > 0) {
         activeBabyId.value = data[0].id;
       } else if (!currentValid) {

@@ -29,7 +29,7 @@
         </button>
       </div>
 
-      <!-- Empty State -->
+      <!-- Vacio State -->
       <div v-else-if="!babiesStore.hasBabies" class="text-center py-12">
         <svg class="mx-auto h-24 w-24 text-forest/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4z" />
@@ -48,7 +48,7 @@
         </RouterLink>
       </div>
 
-      <!-- Babies Grid -->
+      <!-- Babies -->
       <div v-else class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <div
           v-for="baby in babiesStore.babies"
@@ -56,15 +56,14 @@
           class="group relative overflow-hidden rounded-3xl border border-sage bg-white/90 p-6 transition-all hover:shadow-lg"
           :class="{ 'ring-2 ring-leaf': baby.id === babiesStore.activeBabyId }"
         >
-          <!-- Active Badge -->
+          <!-- Active -->
           <div
             v-if="baby.id === babiesStore.activeBabyId"
             class="absolute right-4 top-4 rounded-full bg-leaf px-2 py-1 text-xs font-medium text-white"
           >
             Activo
           </div>
-
-          <!-- Baby Photo -->
+         
           <div class="flex items-center justify-center">
             <div class="h-20 w-20 overflow-hidden rounded-full bg-leaf/10">
               <img
@@ -80,8 +79,7 @@
               </div>
             </div>
           </div>
-
-          <!-- Baby Info -->
+          
           <div class="mt-4 text-center">
             <h3 class="text-lg font-semibold text-ink">{{ baby.name }}</h3>
             <p class="text-sm text-forest/75">
@@ -91,8 +89,7 @@
               {{ baby.notes }}
             </p>
           </div>
-
-          <!-- Actions -->
+          
           <div class="mt-6 flex gap-2">
             <button
               v-if="baby.id !== babiesStore.activeBabyId"
@@ -109,8 +106,7 @@
             </RouterLink>
           </div>
         </div>
-
-        <!-- Add New Baby Card -->
+        
         <RouterLink
           to="/babies/new"
           class="group flex flex-col items-center justify-center rounded-3xl border-2 border-dashed border-sage bg-white/50 p-6 transition-all hover:bg-white/90 hover:shadow-lg"

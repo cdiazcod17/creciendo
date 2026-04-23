@@ -61,7 +61,7 @@
               </div>
             </div>
 
-            <!-- PRÓXIMA CITA (PRIORIDAD ALTA) -->
+            <!-- PRÓXIMA CITA -->
             <div class="mt-5 rounded-2xl border border-leaf/20 bg-leaf/5 p-4">
               <div class="flex items-center justify-between mb-2">
                 <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-leaf">Próxima cita</span>
@@ -87,7 +87,7 @@
               </div>
             </div>
 
-            <!-- EVENTOS RECIENTES (Ligero) -->
+
             <div class="mt-5 flex-1">
               <div class="flex items-center justify-between mb-2 pb-1 border-b border-sage/30">
                 <span class="text-[10px] font-bold uppercase tracking-[0.15em] text-forest/40">Últimas rutinas</span>
@@ -117,7 +117,7 @@
               <div v-else class="py-2 text-center text-[11px] text-forest/30 italic">Sin registros diarios</div>
             </div>
 
-            <!-- Acciones -->
+
             <div class="mt-6 flex gap-2">
               <RouterLink :to="{ name: 'baby-details', params: { babyId: baby.id } }" class="btn-muted flex-1 py-2 text-xs font-bold">Detalles</RouterLink>
               <button
@@ -160,7 +160,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, markRaw } from 'vue'
+import { ref, onMounted, markRaw, h } from 'vue'
 import { useBabiesStore } from '../stores/babies'
 import { useAuthStore } from '../stores/auth'
 import { useEventsStore } from '../stores/events'
@@ -180,16 +180,31 @@ const pendingBabyId = ref(null)
 
 const newBaby = ref({ name: '', birth_date: '', sex: 'other', notes: '', photo_url: '' })
 
-const IconFeeding = { template: '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M3 12H2m15.364 6.364l-.707-.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>' };
-const IconSleep = { template: '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>' };
-const IconDiaper = { template: '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>' };
-const IconGeneric = { template: '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>' };
+// Icons as functional components
+const IconFeeding = (props) => h('svg', { ...props, fill: 'none', viewBox: '0 0 24 24', stroke: 'currentColor' }, [
+  h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '2', d: 'M12 3v1m0 16v1m9-9h-1M3 12H2m15.364 6.364l-.707-.707M16 12a4 4 0 11-8 0 4 4 0 018 0z' })
+]);
+const IconSleep = (props) => h('svg', { ...props, fill: 'none', viewBox: '0 0 24 24', stroke: 'currentColor' }, [
+  h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '2', d: 'M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z' })
+]);
+const IconDiaper = (props) => h('svg', { ...props, fill: 'none', viewBox: '0 0 24 24', stroke: 'currentColor' }, [
+  h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '2', d: 'M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z' })
+]);
+const IconGeneric = (props) => h('svg', { ...props, fill: 'none', viewBox: '0 0 24 24', stroke: 'currentColor' }, [
+  h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '2', d: 'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' })
+]);
+const IconAppointment = (props) => h('svg', { ...props, fill: 'none', viewBox: '0 0 24 24', stroke: 'currentColor' }, [
+  h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '2', d: 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z' })
+]);
+const IconGrowth = (props) => h('svg', { ...props, fill: 'none', viewBox: '0 0 24 24', stroke: 'currentColor' }, [
+  h('path', { 'stroke-linecap': 'round', 'stroke-linejoin': 'round', 'stroke-width': '2', d: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6' })
+]);
 
 const quickLinks = [
   { name: 'babies', to: '/babies', kicker: 'Perfiles', label: 'Mis Bebés', icon: markRaw(IconGeneric) },
-  { name: 'appointments', to: '/appointments', kicker: 'Médico', label: 'Citas', icon: markRaw({ template: '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>' }) },
+  { name: 'appointments', to: '/appointments', kicker: 'Médico', label: 'Citas', icon: markRaw(IconAppointment) },
   { name: 'eventos', to: '/eventos', kicker: 'Rutina', label: 'Eventos', icon: markRaw(IconFeeding) },
-  { name: 'growth', to: '/crecimiento', kicker: 'Evolución', label: 'Crecimiento', icon: markRaw({ template: '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>' }) }
+  { name: 'growth', to: '/crecimiento', kicker: 'Evolución', label: 'Crecimiento', icon: markRaw(IconGrowth) }
 ];
 
 async function initializeDashboard() {
