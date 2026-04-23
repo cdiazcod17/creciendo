@@ -56,8 +56,8 @@
 
   ---
 
-  5. Estructura del Repositorio
 
+  5. Estructura del Repositorio
     1 creciendo-app/
     2 ├── backend/                # API y lógica de servidor
     3 │   ├── app/
@@ -80,8 +80,6 @@
    20 │   │   ├── stores/         # Estados globales (Pinia)
    21 │   │   └── views/          # Páginas principales
    22 │   └── tailwind.config.js  # Configuración de estilos
-
-
   ---
 
   6. Reglas de Dominio e Integridad
