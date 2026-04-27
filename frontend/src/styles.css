@@ -2,6 +2,18 @@
 
 @import "tailwindcss";
 
+@theme {
+  --color-paper: #f7fbf5;
+  --color-mist: #eef6ee;
+  --color-sage: #dcebdc;
+  --color-leaf: #6d9b75;
+  --color-forest: #2f5e49;
+  --color-ink: #183128;
+
+  --font-family-display: "Sora", sans-serif;
+  --font-family-body: "Manrope", sans-serif;
+}
+
 @layer base {
   html {
     scroll-behavior: smooth;
