@@ -19,9 +19,10 @@ Facilitar la gestión de la información del desarrollo infantil en un entorno m
 
 ### Backend
 *   **Framework:** FastAPI (Python 3.12+)
+*   **Servidor WSGI:** Gunicorn con trabajadores Uvicorn (Optimizado para Render)
 *   **ORM:** SQLAlchemy 2.0
 *   **Migraciones:** Alembic
-*   **Base de Datos:** PostgreSQL
+*   **Base de Datos:** PostgreSQL (Alojada en Clever Cloud)
 *   **Validación:** Pydantic V2
 *   **Seguridad:** JWT (JSON Web Tokens) y Passlib (BCrypt)
 
@@ -30,9 +31,9 @@ Facilitar la gestión de la información del desarrollo infantil en un entorno m
 *   **Build Tool:** Vite
 *   **Estado Global:** Pinia
 *   **Enrutado:** Vue Router
-*   **Estilos:** Tailwind CSS
+*   **Estilos:** Tailwind CSS v4 (Configuración vía @theme en CSS)
 *   **Cliente HTTP:** Axios
-*   **Componentes UI:** Vue Toastification, Font Awesome
+*   **Despliegue:** Vercel
 
 ---
 
@@ -54,7 +55,26 @@ El proyecto sigue una separación clara de responsabilidades para facilitar el m
 
 ---
 
-## 5. Estructura del Repositorio
+## 5. Despliegue y Ambientes
+
+La aplicación está configurada para operar en dos ambientes: **Develop** y **Producción**.
+
+### Infraestructura
+*   **Frontend:** Vercel (con `vercel.json` para soporte de SPA routing).
+*   **Backend:** Render (PaaS).
+*   **Base de Datos:** Clever Cloud (Instancias PostgreSQL independientes para Dev y Prod).
+
+### Configuración de CORS
+El backend está configurado para aceptar peticiones desde dominios específicos de Vercel (incluyendo dominios de preview y producción). La variable `CORS_ALLOWED_ORIGINS` gestiona esta lista.
+
+### Optimización para Base de Datos Gratuita
+Para evitar el error `FATAL: too many connections` en planes gratuitos, el backend utiliza:
+*   **Pool Limiting:** `pool_size=2` y `max_overflow=0` en la configuración de SQLAlchemy.
+*   **Single Worker:** Despliegue en Render con un solo worker de Gunicorn (`-w 1`) para minimizar el consumo de conexiones.
+
+---
+
+## 6. Estructura del Repositorio
 
 ```bash
 creciendo-app/
@@ -73,27 +93,25 @@ creciendo-app/
 ├── frontend/               # Aplicación Vue.js
 │   ├── src/
 │   │   ├── components/     # Componentes reutilizables
-│   │   ├── composables/    # Lógica reactiva extraída
-│   │   ├── router/         # Configuración de Vue Router
-│   │   ├── services/       # Llamadas a la API (Axios)
 │   │   ├── stores/         # Estados globales (Pinia)
 │   │   └── views/          # Páginas principales
-│   └── tailwind.config.js  # Configuración de estilos
+│   ├── vercel.json         # Configuración de despliegue Vercel
+│   └── src/styles.css      # Tema de Tailwind v4 y estilos globales
 └── README.md               # Documentación principal del proyecto
 ```
 
 ---
 
-## 6. Reglas de Dominio e Integridad
+## 7. Reglas de Dominio e Integridad
 
 *   **Propiedad de los datos:** Un usuario solo puede acceder a la información de los bebés que ha registrado personalmente.
-*   **Contexto de Bebé Activo:** La UI opera siempre bajo el contexto de un "Bebé Activo". Si un usuario no tiene bebés, el sistema le guiará para crear el primero.
-*   **Validación de Ownership:** Cada petición al backend que involucre un `baby_id` o recursos asociados (eventos, citas) verifica rigurosamente que el recurso pertenezca al usuario autenticado.
-*   **Persistencia de Selección:** El bebé activo seleccionado persiste entre sesiones y a través de la navegación entre los diferentes módulos.
+*   **Contexto de Bebé Activo:** La UI opera siempre bajo el contexto de un "Bebé Activo".
+*   **Validación de Ownership:** Cada petición al backend verifica rigurosamente que el recurso pertenezca al usuario autenticado.
+*   **Integridad de Enums:** Los tipos de eventos (feeding, sleep, medication, etc.) están sincronizados entre Python y PostgreSQL. Al añadir nuevos tipos, se debe ejecutar `ALTER TYPE event_types ADD VALUE 'nuevo_valor'` en la base de datos.
 
 ---
 
-## 7. Instalación y Configuración Local
+## 8. Instalación y Configuración Local
 
 ### Requisitos Previos
 *   Python 3.12+
@@ -101,99 +119,30 @@ creciendo-app/
 *   PostgreSQL 15+
 
 ### Configuración del Backend
-
-1.  Navegar a la carpeta de backend:
-    ```bash
-    cd backend
-    ```
-2.  Crear y activar entorno virtual:
-    ```bash
-    python -m venv .venv
-    # Windows:
-    .venv\Scripts\activate
-    # Linux/macOS:
-    source .venv/bin/activate
-    ```
-3.  Instalar dependencias:
-    ```bash
-    pip install -r requirements.txt
-    ```
-4.  Configurar variables de entorno (archivo `.env`):
+1.  Navegar a `backend/`, crear entorno virtual e instalar: `pip install -r requirements.txt`.
+2.  Configurar `.env`:
     ```env
-    SECRET_KEY=tu_clave_secreta_aqui
     DATABASE_URL=postgresql://usuario:password@localhost:5432/creciendo_db
+    SECRET_KEY=tu_clave_secreta
+    CORS_ALLOWED_ORIGINS=http://localhost:5173
     ```
 
 ### Configuración del Frontend
-
-1.  Navegar a la carpeta de frontend:
-    ```bash
-    cd frontend
-    ```
-2.  Instalar dependencias:
-    ```bash
-    npm install
-    ```
-
----
-
-## 8. Ejecución del Proyecto
-
-### Iniciar Backend
-Desde la carpeta `backend`:
-```bash
-uvicorn app.main:app --reload
-```
-La API estará disponible en `http://localhost:8000` y la documentación interactiva en `http://localhost:8000/docs`.
-
-### Iniciar Frontend
-Desde la carpeta `frontend`:
-```bash
-npm run dev
-```
-La aplicación estará disponible en `http://localhost:5173`.
+1.  Navegar a `frontend/` e instalar: `npm install`.
+2.  Iniciar desarrollo: `npm run dev`.
 
 ---
 
 ## 9. Base de Datos y Migraciones
-El proyecto utiliza **Alembic** para gestionar el esquema de la base de datos de forma evolutiva.
-
-*   **Crear una nueva migración:**
-    ```bash
-    alembic revision --autogenerate -m "descripción del cambio"
-    ```
-*   **Aplicar migraciones:**
-    ```bash
-    alembic upgrade head
-    ```
-
-## 10. Testing
-Se incluyen pruebas automatizadas para el backend utilizando `pytest`, con especial énfasis en seguridad y validación de propiedad.
-
-*   **Ejecutar pruebas:**
-    ```bash
-    cd backend
-    pytest
-    ```
-*   **Cobertura actual:** Autenticación de usuarios, validación de pertenencia de recursos (Ownership) y sincronización del bebé activo.
+*   **Aplicar migraciones:** `alembic upgrade head`.
+*   **Nota sobre Producción:** El comando de inicio en Render incluye la ejecución automática de migraciones: `alembic upgrade head && gunicorn...`
 
 ---
 
-## 11. Estado Actual y Siguientes Pasos
-El proyecto se encuentra en una fase avanzada de su MVP. Los módulos de **Autenticación**, **Dashboard**, **Bebés**, **Citas** y **Eventos** están operativos y sincronizados.
+## 10. Estado Actual y Siguientes Pasos
+El MVP está **totalmente operativo y desplegado**.
 
 **Próximas mejoras:**
-*   Implementación de gráficas de crecimiento basadas en estándares de la OMS.
-*   Módulo extendido de notas de salud e historial de vacunas.
-*   Exportación de reportes mensuales en formato PDF.
-*   Optimización del sistema de gestión de imágenes de perfil.
-*   Módulo de Hitos del desarrollo.
-
----
-
-## 12. Contribución
-Para mantener la integridad y calidad del código:
-1.  Crear ramas descriptivas: `feature/nombre-funcionalidad` o `fix/descripcion-error`.
-2.  Validar que `npm run lint` no devuelva errores antes de realizar un Commit.
-3.  Asegurarse de que las nuevas funcionalidades respeten el flujo `router -> service -> repository`.
-
+*   Implementación de gráficas de crecimiento (OMS).
+*   Exportación de reportes mensuales en PDF.
+*   Optimización de carga de imágenes de perfil.
