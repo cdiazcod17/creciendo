@@ -16,7 +16,7 @@
             </div>
           </template>
           <template v-else>
-            <RouterLink class="nav-link" to="/">Inicio</RouterLink>
+            <RouterLink class="nav-link" to="/home">Inicio</RouterLink>
             <RouterLink class="nav-link" :to="{ name: 'home', hash: '#plataforma' }">Plataforma</RouterLink>
             <RouterLink class="nav-link" :to="{ name: 'home', hash: '#contacto' }">Contactenos</RouterLink>
           </template>

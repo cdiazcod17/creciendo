@@ -11,7 +11,7 @@
       <div>
         <p class="text-sm font-semibold text-forest">Navegacion</p>
         <div class="mt-4 flex flex-col gap-2 text-sm text-forest/70">
-          <RouterLink to="/">Inicio</RouterLink>
+          <RouterLink to="/home">Inicio</RouterLink>
           <RouterLink to="/home#plataforma">Plataforma</RouterLink>
           <RouterLink to="/home#contacto">Contactenos</RouterLink>
         </div>

@@ -27,12 +27,12 @@
         </article>
         <article class="grid gap-4 sm:grid-cols-2">
           <div class="card">
-            <p class="text-xs uppercase tracking-widest text-forest/50">Flujo activo</p>
-            <p class="mt-2 text-sm text-forest/75">Cada registro depende del bebe activo para evitar confusiones entre perfiles.</p>
+            <p class="text-xs uppercase tracking-widest text-forest/50">Personal</p>
+            <p class="mt-2 text-sm text-forest/75">Puedes hacer el registro de todos tus bebes.</p>
           </div>
           <div class="card">
-            <p class="text-xs uppercase tracking-widest text-forest/50">Entrada rapida</p>
-            <p class="mt-2 text-sm text-forest/75">Diseño movil primero para registrar en medio de la rutina diaria.</p>
+            <p class="text-xs uppercase tracking-widest text-forest/50">LLevalo a todo lugar</p>
+            <p class="mt-2 text-sm text-forest/75">Diseño movil para que la puedas usar en cualquier lugar.</p>
           </div>
         </article>
       </div>
@@ -47,7 +47,7 @@
       <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <article class="card">
           <p class="text-sm font-semibold text-forest">Eventos diarios</p>
-          <p class="mt-2 text-sm text-forest/72">Lactancia, sueno, cambios y cualquier rutina clave en un historial ordenado.</p>
+          <p class="mt-2 text-sm text-forest/72">Lactancia, sueño, cambios de pañal y cualquier rutina clave en un historial ordenado.</p>
         </article>
         <article class="card">
           <p class="text-sm font-semibold text-forest">Citas y seguimiento</p>
@@ -67,7 +67,7 @@
     <section id="contacto" class="grid gap-4 lg:grid-cols-[1fr_0.9fr]">
       <article class="hero-panel px-5 py-6 sm:p-8">
         <span class="section-kicker">Contactenos</span>
-        <h2 class="mt-4 font-display text-2xl font-semibold text-forest sm:text-3xl">Estamos construyendo un MVP cuidado y util</h2>
+        <h2 class="mt-4 font-display text-2xl font-semibold text-forest sm:text-3xl">Estamos construyendo una herramienta con cuidado y util</h2>
         <p class="mt-4 max-w-xl text-sm leading-6 text-forest/75">
           Si quieres compartir feedback, solicitar una demo o revisar prioridades del producto, podemos conversar sobre el flujo ideal para familias y cuidadores.
         </p>
