@@ -124,10 +124,10 @@
                 type="button"
                 :disabled="isSelectingBaby || isBabySelected(baby.id)"
                 :class="[
-                  'flex-[1.5] rounded-xl text-xs font-bold transition-all border',
+                  'flex-[1.5] rounded-xl text-xs font-bold transition-colors border',
                   isBabySelected(baby.id)
                     ? 'bg-slate-50 text-slate-300 border-slate-100 cursor-not-allowed'
-                    : 'bg-leaf text-white border-leaf hover:bg-forest shadow-sm'
+                    : 'bg-leaf text-white border-leaf hover:bg-forest hover:border-forest shadow-sm'
                 ]"
                 @click="handleSelectBaby(baby)"
               >
