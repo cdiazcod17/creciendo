@@ -12,7 +12,7 @@
       </div>
 
       <form @submit.prevent="handleSubmit" class="card space-y-6 rounded-3xl p-8">
-        <!-- Photo Upload -->
+        <!-- Foto -->
         <div class="flex flex-col items-center space-y-4">
           <div class="relative">
             <div class="h-32 w-32 overflow-hidden rounded-full bg-leaf/10">
@@ -49,7 +49,7 @@
           <p class="text-xs text-forest/60">Haz clic para cambiar la foto</p>
         </div>
 
-        <!-- Name -->
+        <!-- Nombre -->
         <div>
           <label for="name" class="block text-sm font-medium text-ink">Nombre *</label>
           <input
@@ -62,7 +62,7 @@
           />
         </div>
 
-        <!-- Birth Date -->
+        <!-- Fecha de naciomiento -->
         <div>
           <label for="birth_date" class="block text-sm font-medium text-ink">Fecha de nacimiento *</label>
           <input
@@ -74,7 +74,7 @@
           />
         </div>
 
-        <!-- Sex -->
+        <!-- Genero -->
         <div>
           <label class="block text-sm font-medium text-ink">Sexo</label>
           <div class="mt-2 space-y-2">
@@ -108,7 +108,7 @@
           </div>
         </div>
 
-        <!-- Notes -->
+        <!-- Notas -->
         <div>
           <label for="notes" class="block text-sm font-medium text-ink">Notas adicionales</label>
           <textarea
@@ -126,7 +126,7 @@
           <p class="mt-1 text-sm">{{ error }}</p>
         </div>
 
-        <!-- Actions -->
+        <!-- Acciones -->
         <div class="flex flex-col gap-3 sm:flex-row sm:justify-end">
           <RouterLink
             to="/babies"
