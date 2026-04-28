@@ -3,7 +3,7 @@
   <div class="mx-auto grid max-w-5xl gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:gap-8">
     <section class="card order-1 lg:order-2">
       <h1 class="font-display text-3xl font-bold">Iniciar sesión</h1>
-      <p class="mt-2 text-sm text-forest/70">Accede a tu cuenta para ver el dashboard de tu bebé activo.</p>
+      <p class="mt-2 text-sm text-forest/70">Accede a tu cuenta para ver el dashboard de tu bebé.</p>
 
       <form class="mt-6 space-y-4" @submit.prevent="onSubmit">
         <div>
@@ -38,7 +38,7 @@
         <span class="section-kicker">Ingreso seguro</span>
         <h2 class="mt-4 font-display text-2xl font-bold text-forest sm:text-4xl">Tu rutina de cuidado, clara desde el primer vistazo</h2>
         <p class="mt-4 text-sm leading-6 text-forest/75">
-          Accede a Creciendo para revisar el estado del bebé activo, seguir citas, crecimiento y notas de salud sin perder tiempo.
+          Accede a Creciendo para revisar el estado del bebé, seguir citas, crecimiento y notas de salud sin perder tiempo.
         </p>
       </div>
 
