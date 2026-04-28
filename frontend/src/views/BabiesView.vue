@@ -29,7 +29,7 @@
         </button>
       </div>
 
-      <!-- Vacio State -->
+      <!-- Vacío State -->
       <div v-else-if="!babiesStore.hasBabies" class="text-center py-12">
         <svg class="mx-auto h-24 w-24 text-forest/30" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M12 12c2.21 0 4-1.79 4-4S14.21 4 12 4 8 5.79 8 8s1.79 4 4 4z" />

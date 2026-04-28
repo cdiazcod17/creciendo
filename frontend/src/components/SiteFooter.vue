@@ -4,16 +4,16 @@
       <div>
         <AppLogo />
         <p class="mt-4 max-w-md text-sm leading-6 text-forest/70">
-          Creciendo acompaña a los padres primerizos a cuidar de su bebe con una plataforma clara, confiable  y facil de usar.
+          Creciendo acompaña a los padres primerizos a cuidar de su bebé con una plataforma clara, confiable y fácil de usar.
         </p>
       </div>
 
       <div>
-        <p class="text-sm font-semibold text-forest">Navegacion</p>
+        <p class="text-sm font-semibold text-forest">Navegación</p>
         <div class="mt-4 flex flex-col gap-2 text-sm text-forest/70">
           <RouterLink to="/home">Inicio</RouterLink>
           <RouterLink to="/home#plataforma">Plataforma</RouterLink>
-          <RouterLink to="/home#contacto">Contactenos</RouterLink>
+          <RouterLink to="/home#contacto">Contáctenos</RouterLink>
         </div>
       </div>
 

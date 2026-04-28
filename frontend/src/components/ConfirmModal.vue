@@ -2,7 +2,7 @@
   <Teleport to="body">
     <div v-if="open" class="fixed inset-0 z-[60] flex items-end bg-forest/30 p-3 sm:items-center sm:justify-center sm:p-6">
       <div class="w-full max-w-md rounded-3xl border border-sage bg-white p-5 shadow-xl sm:p-6">
-        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-forest/55">Confirmacion</p>
+        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-forest/55">Confirmación</p>
         <h3 class="mt-2 font-display text-xl font-semibold text-forest">{{ title }}</h3>
         <p class="mt-2 text-sm leading-6 text-forest/75">{{ message }}</p>
 
@@ -27,11 +27,11 @@ defineProps({
   },
   title: {
     type: String,
-    default: "Confirmar accion",
+    default: "Confirmar acción",
   },
   message: {
     type: String,
-    default: "Esta accion no se puede deshacer.",
+    default: "Esta acción no se puede deshacer.",
   },
   confirmLabel: {
     type: String,
