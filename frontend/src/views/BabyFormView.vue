@@ -82,7 +82,7 @@
               <input
                 v-model="form.sex"
                 type="radio"
-                value="M"
+                value="male"
                 class="h-4 w-4 text-leaf focus:ring-leaf"
               />
               <span class="ml-2 text-sm text-ink">Masculino</span>
@@ -91,10 +91,19 @@
               <input
                 v-model="form.sex"
                 type="radio"
-                value="F"
+                value="female"
                 class="h-4 w-4 text-leaf focus:ring-leaf"
               />
               <span class="ml-2 text-sm text-ink">Femenino</span>
+            </label>
+            <label class="flex items-center">
+              <input
+                v-model="form.sex"
+                type="radio"
+                value="other"
+                class="h-4 w-4 text-leaf focus:ring-leaf"
+              />
+              <span class="ml-2 text-sm text-ink">Otro</span>
             </label>
             <label class="flex items-center">
               <input
