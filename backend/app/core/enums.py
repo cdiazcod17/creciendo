@@ -21,5 +21,6 @@ class EventType(str, enum.Enum):
     
 class AppointmentStatus(str, enum.Enum):
     scheduled = "scheduled"
+    confirmed = "confirmed"
     completed = "completed"
     cancelled = "cancelled"
