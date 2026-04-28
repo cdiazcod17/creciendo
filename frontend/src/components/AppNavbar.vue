@@ -9,7 +9,7 @@
             <RouterLink class="nav-link" :to="primaryAuthenticatedRoute">{{ primaryAuthenticatedLabel }}</RouterLink>
             <RouterLink v-if="authStore.hasActiveBaby" class="nav-link" to="/eventos">Eventos</RouterLink>
             <RouterLink v-if="authStore.hasActiveBaby" class="nav-link" to="/appointments">Citas</RouterLink>
-            <RouterLink class="nav-link" to="/babies">Bebes</RouterLink>
+            <RouterLink class="nav-link" to="/babies">Bebés</RouterLink>
             <div v-if="babiesStore.activeBaby" class="ml-2 flex items-center gap-2 rounded-full bg-leaf/10 px-3 py-1 text-xs font-medium text-leaf">
               <span class="h-1.5 w-1.5 rounded-full bg-leaf animate-pulse"></span>
               {{ babiesStore.activeBaby.name }}
@@ -18,13 +18,13 @@
           <template v-else>
             <RouterLink class="nav-link" to="/home">Inicio</RouterLink>
             <RouterLink class="nav-link" :to="{ name: 'home', hash: '#plataforma' }">Plataforma</RouterLink>
-            <RouterLink class="nav-link" :to="{ name: 'home', hash: '#contacto' }">Contactenos</RouterLink>
+            <RouterLink class="nav-link" :to="{ name: 'home', hash: '#contacto' }">Contáctenos</RouterLink>
           </template>
         </nav>
 
         <div class="hidden items-center gap-2 md:flex">
           <template v-if="authStore.isAuthenticated">
-            <button class="btn-primary" type="button" @click="handleLogout">Cerrar sesion</button>
+            <button class="btn-primary" type="button" @click="handleLogout">Cerrar sesión</button>
           </template>
           <template v-else>
             <RouterLink class="btn-muted hidden sm:inline-flex" to="/login">Login</RouterLink>
@@ -33,13 +33,13 @@
         </div>
 
         <div class="flex items-center gap-2 md:hidden">
-          <button v-if="authStore.isAuthenticated" class="btn-primary px-3 py-2 text-xs" type="button" @click="handleLogout">Cerrar sesion</button>
+          <button v-if="authStore.isAuthenticated" class="btn-primary px-3 py-2 text-xs" type="button" @click="handleLogout">Cerrar sesión</button>
           <button
             class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-sage bg-white text-forest"
             type="button"
             @click="isMobileMenuOpen = !isMobileMenuOpen"
             :aria-expanded="isMobileMenuOpen ? 'true' : 'false'"
-            aria-label="Abrir navegacion"
+            aria-label="Abrir navegación"
           >
             <span class="text-lg">{{ isMobileMenuOpen ? "×" : "≡" }}</span>
           </button>
@@ -53,7 +53,7 @@
           <RouterLink class="nav-link rounded-xl px-2 py-2 hover:bg-mist" :to="primaryAuthenticatedRoute" @click="closeMobileMenu">{{ primaryAuthenticatedLabel }}</RouterLink>
           <RouterLink v-if="authStore.hasActiveBaby" class="nav-link rounded-xl px-2 py-2 hover:bg-mist" to="/eventos" @click="closeMobileMenu">Eventos</RouterLink>
           <RouterLink v-if="authStore.hasActiveBaby" class="nav-link rounded-xl px-2 py-2 hover:bg-mist" to="/appointments" @click="closeMobileMenu">Citas</RouterLink>
-          <RouterLink class="nav-link rounded-xl px-2 py-2 hover:bg-mist" to="/babies" @click="closeMobileMenu">Bebes</RouterLink>
+          <RouterLink class="nav-link rounded-xl px-2 py-2 hover:bg-mist" to="/babies" @click="closeMobileMenu">Bebés</RouterLink>
           <div v-if="babiesStore.activeBaby" class="mt-1 flex items-center gap-2 rounded-xl bg-leaf/10 px-3 py-2 text-sm font-medium text-leaf">
             <span class="h-1.5 w-1.5 rounded-full bg-leaf animate-pulse"></span>
             Bebé activo: {{ babiesStore.activeBaby.name }}
@@ -62,13 +62,13 @@
         <template v-else>
           <RouterLink class="nav-link rounded-xl px-2 py-2 hover:bg-mist" to="/" @click="closeMobileMenu">Inicio</RouterLink>
           <RouterLink class="nav-link rounded-xl px-2 py-2 hover:bg-mist" :to="{ name: 'home', hash: '#plataforma' }" @click="closeMobileMenu">Plataforma</RouterLink>
-          <RouterLink class="nav-link rounded-xl px-2 py-2 hover:bg-mist" :to="{ name: 'home', hash: '#contacto' }" @click="closeMobileMenu">Contactenos</RouterLink>
+          <RouterLink class="nav-link rounded-xl px-2 py-2 hover:bg-mist" :to="{ name: 'home', hash: '#contacto' }" @click="closeMobileMenu">Contáctenos</RouterLink>
         </template>
 
         <div class="mt-2 grid gap-2">
           <template v-if="authStore.isAuthenticated">
-            <RouterLink class="btn-muted w-full" to="/babies" @click="closeMobileMenu">Gestionar bebes</RouterLink>
-            <button class="btn-primary w-full" type="button" @click="handleLogout">Cerrar sesion</button>
+            <RouterLink class="btn-muted w-full" to="/babies" @click="closeMobileMenu">Gestionar bebés</RouterLink>
+            <button class="btn-primary w-full" type="button" @click="handleLogout">Cerrar sesión</button>
           </template>
           <template v-else>
             <RouterLink class="btn-muted w-full" to="/login" @click="closeMobileMenu">Login</RouterLink>
@@ -110,7 +110,7 @@ function closeMobileMenu() {
 async function handleLogout() {
   closeMobileMenu();
   await authStore.logout();
-  toast.info("Sesion cerrada", "Tu sesion fue cerrada correctamente.");
+  toast.info("Sesión cerrada", "Tu sesión fue cerrada correctamente.");
   await router.push("/login");
 }
 </script>
