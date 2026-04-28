@@ -48,7 +48,7 @@
         </RouterLink>
       </div>
 
-      <!-- Babies -->
+      <!-- Bebes -->
       <div v-else class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         <div
           v-for="baby in babiesStore.babies"
@@ -56,7 +56,7 @@
           class="group relative overflow-hidden rounded-3xl border border-sage bg-white/90 p-6 transition-all hover:shadow-lg"
           :class="{ 'ring-2 ring-leaf': baby.id === babiesStore.activeBabyId }"
         >
-          <!-- Active -->
+          <!-- Activo -->
           <div
             v-if="baby.id === babiesStore.activeBabyId"
             class="absolute right-4 top-4 rounded-full bg-leaf px-2 py-1 text-xs font-medium text-white"

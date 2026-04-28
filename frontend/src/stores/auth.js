@@ -11,38 +11,15 @@ function normalizeApiError(error, fallback) {
   }
 
   if (Array.isArray(detail)) {
-    // Mapeo de campos técnicos a nombres amigables en español
-    const fieldMap = {
-      full_name: "nombre completo",
-      email: "correo electrónico",
-      password: "contraseña",
-      username: "usuario",
-    };
-
-    const msgMap = {
-      "field required": "es obligatorio",
-      "value is not a valid email address": "no es un correo electrónico válido",
-      "String should have at least 8 characters": "debe tener al menos 8 caracteres",
-      "String should have at least 2 characters": "debe tener al menos 2 caracteres",
-    };
-
     return detail
       .map((err) => {
-        const rawField = err.loc[err.loc.length - 1];
-        const field = fieldMap[rawField] || rawField;
-        
-        // Si el mensaje ya parece ser una oración completa en español, lo usamos tal cual
-        if (/[A-Z]/.test(err.msg[0]) && err.msg.includes(" ")) {
-           return err.msg;
-        }
-
-        const translatedMsg = msgMap[err.msg] || err.msg;
-        return `El campo ${field} ${translatedMsg}`;
+        const field = err.loc[err.loc.length - 1];
+        return `${field}: ${err.msg}`;
       })
       .join(". ");
   }
 
-  return fallback;
+  return detail || fallback;
 }
 
 export const useAuthStore = defineStore("auth", () => {
