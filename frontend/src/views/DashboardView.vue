@@ -8,18 +8,18 @@
       </div>
 
       <!-- Accesos Rápidos -->
-      <div class="mb-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="mb-10 grid grid-cols-4 gap-2 sm:gap-4">
         <RouterLink
           v-for="link in quickLinks"
           :key="link.name"
           :to="link.to"
-          class="card flex flex-col items-start rounded-3xl border border-sage bg-white/90 p-5 transition-all hover:shadow-md group"
+          class="card flex flex-col items-center text-center rounded-2xl border border-sage bg-white/90 px-2 py-3 sm:p-5 transition-all hover:shadow-md group"
         >
-          <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-leaf/10 group-hover:bg-leaf/20 transition-colors">
-            <component :is="link.icon" class="h-5 w-5 text-leaf" />
+          <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-leaf/10 group-hover:bg-leaf/20 transition-colors sm:h-12 sm:w-12 sm:rounded-xl">
+            <component :is="link.icon" class="h-4 w-4 text-leaf sm:h-6 sm:w-6" />
           </div>
-          <p class="mt-3 text-[10px] uppercase tracking-[0.2em] text-forest/40 font-bold">{{ link.kicker }}</p>
-          <p class="mt-1 text-sm font-semibold text-ink">{{ link.label }}</p>
+          <p class="mt-2 text-[8px] uppercase tracking-wider text-forest/40 font-bold sm:mt-3 sm:text-[10px] sm:tracking-[0.2em]">{{ link.kicker }}</p>
+          <p class="mt-0.5 text-[10px] font-bold text-ink leading-tight sm:mt-1 sm:text-sm">{{ link.label }}</p>
         </RouterLink>
       </div>
 
