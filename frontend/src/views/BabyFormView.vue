@@ -1,14 +1,21 @@
 <template>
   <div class="min-h-screen bg-paper py-10">
     <div class="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
-      <div class="mb-10">
-        <p class="section-kicker">{{ isEditing ? 'Editar' : 'Nuevo' }} perfil</p>
-        <h1 class="mt-3 text-4xl font-bold text-ink">
-          {{ isEditing ? 'Editar bebé' : 'Agregar bebé' }}
-        </h1>
-        <p class="mt-2 text-sm text-forest/80">
-          {{ isEditing ? 'Actualiza la información del perfil.' : 'Completa los datos para crear un nuevo perfil de bebé.' }}
-        </p>
+      <div class="mb-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p class="section-kicker">{{ isEditing ? 'Editar' : 'Nuevo' }} perfil</p>
+          <h1 class="mt-3 text-4xl font-bold text-ink">
+            {{ isEditing ? 'Editar bebé' : 'Agregar bebé' }}
+          </h1>
+          <p class="mt-2 text-sm text-forest/80">
+            {{ isEditing ? 'Actualiza la información del perfil.' : 'Completa los datos para crear un nuevo perfil de bebé.' }}
+          </p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <RouterLink to="/dashboard" class="btn-muted">
+            Volver al Dashboard
+          </RouterLink>
+        </div>
       </div>
 
       <form @submit.prevent="handleSubmit" class="card space-y-6 rounded-3xl p-8">

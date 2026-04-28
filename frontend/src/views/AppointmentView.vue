@@ -1,12 +1,19 @@
 <template>
   <div class="min-h-screen bg-paper py-10">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="mb-10">
-        <p class="section-kicker">Agenda médica</p>
-        <h1 class="mt-3 text-4xl font-bold text-ink">Citas del bebé</h1>
-        <p class="mt-2 text-sm text-forest/80">
-          Gestiona las citas médicas y controles de salud.
-        </p>
+      <div class="mb-10 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p class="section-kicker">Agenda médica</p>
+          <h1 class="mt-3 text-4xl font-bold text-ink">Citas del bebé</h1>
+          <p class="mt-2 text-sm text-forest/80">
+            Gestiona las citas médicas y controles de salud.
+          </p>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <RouterLink to="/dashboard" class="btn-muted">
+            Volver al Dashboard
+          </RouterLink>
+        </div>
       </div>
 
       <!-- Baby Info Card -->

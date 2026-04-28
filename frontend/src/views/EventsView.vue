@@ -9,9 +9,14 @@
             Sigue el día a día de tu bebé: alimentación, sueño, pañales y más.
           </p>
         </div>
-        <RouterLink v-if="!resolvedBabyId" to="/babies" class="btn-primary">
-          Ir a bebés
-        </RouterLink>
+        <div class="flex flex-wrap gap-2">
+          <RouterLink to="/dashboard" class="btn-muted">
+            Volver al Dashboard
+          </RouterLink>
+          <RouterLink v-if="!resolvedBabyId" to="/babies" class="btn-primary">
+            Ir a bebés
+          </RouterLink>
+        </div>
       </div>
 
       <!-- No Active Baby State -->
