@@ -60,13 +60,13 @@
         </div>
       </div>
 
-      <div v-if="babiesStore.activeBaby" class="grid gap-8 lg:grid-cols-[1fr_400px]">
+      <div v-if="babiesStore.activeBaby" class="mx-auto max-w-4xl">
         <!-- Appointments List -->
         <div class="space-y-6">
           <div class="flex items-center justify-between">
             <h2 class="text-2xl font-semibold text-ink">Citas programadas</h2>
             <button
-              @click="showForm = true"
+              @click="openNewForm"
               class="inline-flex items-center rounded-lg bg-leaf px-4 py-2 text-sm font-medium text-white hover:bg-leaf/90"
             >
               <svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -163,117 +163,124 @@
             </div>
           </div>
         </div>
+      </div>
 
-        <!-- Appointment Form -->
-        <div class="space-y-6">
-          <div class="rounded-3xl border border-sage bg-white/90 p-6">
-            <h3 class="text-xl font-semibold text-ink mb-6">
+      <!-- Appointment Form Modal -->
+      <div v-if="showForm" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 px-4 py-6 overflow-y-auto">
+        <div class="w-full max-w-lg rounded-3xl bg-white p-6 shadow-2xl animate-in fade-in zoom-in duration-200 my-auto">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-bold text-ink">
               {{ editingAppointment ? 'Editar cita' : 'Nueva cita' }}
             </h3>
-
-            <form @submit.prevent="handleSubmit" class="space-y-4">
-              <!-- Title -->
-              <div>
-                <label for="title" class="block text-sm font-medium text-ink">Título *</label>
-                <input
-                  id="title"
-                  v-model="form.title"
-                  type="text"
-                  required
-                  class="mt-1 block w-full rounded-lg border border-sage bg-white px-3 py-2 text-ink placeholder-forest/50 focus:border-leaf focus:outline-none focus:ring-1 focus:ring-leaf"
-                  placeholder="Ej: Control pediátrico, Vacunas, etc."
-                />
-              </div>
-
-              <!-- Date & Time -->
-              <div>
-                <label for="scheduled_at" class="block text-sm font-medium text-ink">Fecha y hora *</label>
-                <input
-                  id="scheduled_at"
-                  v-model="form.scheduled_at"
-                  type="datetime-local"
-                  required
-                  class="mt-1 block w-full rounded-lg border border-sage bg-white px-3 py-2 text-ink focus:border-leaf focus:outline-none focus:ring-1 focus:ring-leaf"
-                />
-              </div>
-
-              <!-- Status -->
-              <div>
-                <label for="status" class="block text-sm font-medium text-ink">Estado</label>
-                <select
-                  id="status"
-                  v-model="form.status"
-                  class="mt-1 block w-full rounded-lg border border-sage bg-white px-3 py-2 text-ink focus:border-leaf focus:outline-none focus:ring-1 focus:ring-leaf"
-                >
-                  <option value="scheduled">Programada</option>
-                  <option value="confirmed">Confirmada</option>
-                  <option value="completed">Completada</option>
-                  <option value="cancelled">Cancelada</option>
-                </select>
-              </div>
-
-              <!-- Provider -->
-              <div>
-                <label for="provider_name" class="block text-sm font-medium text-ink">Profesional médico</label>
-                <input
-                  id="provider_name"
-                  v-model="form.provider_name"
-                  type="text"
-                  class="mt-1 block w-full rounded-lg border border-sage bg-white px-3 py-2 text-ink placeholder-forest/50 focus:border-leaf focus:outline-none focus:ring-1 focus:ring-leaf"
-                  placeholder="Nombre del médico o especialista"
-                />
-              </div>
-
-              <!-- Location -->
-              <div>
-                <label for="location" class="block text-sm font-medium text-ink">Ubicación</label>
-                <input
-                  id="location"
-                  v-model="form.location"
-                  type="text"
-                  class="mt-1 block w-full rounded-lg border border-sage bg-white px-3 py-2 text-ink placeholder-forest/50 focus:border-leaf focus:outline-none focus:ring-1 focus:ring-leaf"
-                  placeholder="Clínica, hospital, consultorio"
-                />
-              </div>
-
-              <!-- Notes -->
-              <div>
-                <label for="notes" class="block text-sm font-medium text-ink">Notas adicionales</label>
-                <textarea
-                  id="notes"
-                  v-model="form.notes"
-                  rows="3"
-                  class="mt-1 block w-full rounded-lg border border-sage bg-white px-3 py-2 text-ink placeholder-forest/50 focus:border-leaf focus:outline-none focus:ring-1 focus:ring-leaf"
-                  placeholder="Detalles adicionales de la cita"
-                ></textarea>
-              </div>
-
-              <!-- Error Message -->
-              <div v-if="error" class="rounded-lg bg-red-50 p-4 text-red-700">
-                <p class="font-semibold">Error</p>
-                <p class="mt-1 text-sm">{{ error }}</p>
-              </div>
-
-              <!-- Actions -->
-              <div class="flex space-x-3 pt-4">
-                <button
-                  type="button"
-                  @click="cancelForm"
-                  class="flex-1 rounded-lg border border-sage bg-white py-2 text-sm font-medium text-ink hover:bg-sage/10"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  :disabled="isSubmitting"
-                  class="flex-1 rounded-lg bg-leaf py-2 text-sm font-medium text-white hover:bg-leaf/90 disabled:opacity-50"
-                >
-                  <span v-if="isSubmitting">Guardando...</span>
-                  <span v-else>{{ editingAppointment ? 'Actualizar' : 'Crear' }} cita</span>
-                </button>
-              </div>
-            </form>
+            <button @click="cancelForm" class="text-forest/40 hover:text-ink transition-colors">
+              <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
           </div>
+
+          <form @submit.prevent="handleSubmit" class="space-y-4">
+            <!-- Title -->
+            <div>
+              <label for="title" class="block text-sm font-medium text-ink">Título *</label>
+              <input
+                id="title"
+                v-model="form.title"
+                type="text"
+                required
+                class="mt-1 block w-full rounded-lg border border-sage bg-white px-3 py-2 text-ink placeholder-forest/50 focus:border-leaf focus:outline-none focus:ring-1 focus:ring-leaf"
+                placeholder="Ej: Control pediátrico, Vacunas, etc."
+              />
+            </div>
+
+            <!-- Date & Time -->
+            <div>
+              <label for="scheduled_at" class="block text-sm font-medium text-ink">Fecha y hora *</label>
+              <input
+                id="scheduled_at"
+                v-model="form.scheduled_at"
+                type="datetime-local"
+                required
+                class="mt-1 block w-full rounded-lg border border-sage bg-white px-3 py-2 text-ink focus:border-leaf focus:outline-none focus:ring-1 focus:ring-leaf"
+              />
+            </div>
+
+            <!-- Status -->
+            <div>
+              <label for="status" class="block text-sm font-medium text-ink">Estado</label>
+              <select
+                id="status"
+                v-model="form.status"
+                class="mt-1 block w-full rounded-lg border border-sage bg-white px-3 py-2 text-ink focus:border-leaf focus:outline-none focus:ring-1 focus:ring-leaf"
+              >
+                <option value="scheduled">Programada</option>
+                <option value="confirmed">Confirmada</option>
+                <option value="completed">Completada</option>
+                <option value="cancelled">Cancelada</option>
+              </select>
+            </div>
+
+            <!-- Provider -->
+            <div>
+              <label for="provider_name" class="block text-sm font-medium text-ink">Profesional médico</label>
+              <input
+                id="provider_name"
+                v-model="form.provider_name"
+                type="text"
+                class="mt-1 block w-full rounded-lg border border-sage bg-white px-3 py-2 text-ink placeholder-forest/50 focus:border-leaf focus:outline-none focus:ring-1 focus:ring-leaf"
+                placeholder="Nombre del médico o especialista"
+              />
+            </div>
+
+            <!-- Location -->
+            <div>
+              <label for="location" class="block text-sm font-medium text-ink">Ubicación</label>
+              <input
+                id="location"
+                v-model="form.location"
+                type="text"
+                class="mt-1 block w-full rounded-lg border border-sage bg-white px-3 py-2 text-ink placeholder-forest/50 focus:border-leaf focus:outline-none focus:ring-1 focus:ring-leaf"
+                placeholder="Clínica, hospital, consultorio"
+              />
+            </div>
+
+            <!-- Notes -->
+            <div>
+              <label for="notes" class="block text-sm font-medium text-ink">Notas adicionales</label>
+              <textarea
+                id="notes"
+                v-model="form.notes"
+                rows="3"
+                class="mt-1 block w-full rounded-lg border border-sage bg-white px-3 py-2 text-ink placeholder-forest/50 focus:border-leaf focus:outline-none focus:ring-1 focus:ring-leaf"
+                placeholder="Detalles adicionales de la cita"
+              ></textarea>
+            </div>
+
+            <!-- Error Message -->
+            <div v-if="error" class="rounded-lg bg-red-50 p-4 text-red-700">
+              <p class="font-semibold">Error</p>
+              <p class="mt-1 text-sm">{{ error }}</p>
+            </div>
+
+            <!-- Actions -->
+            <div class="flex space-x-3 pt-4">
+              <button
+                type="button"
+                @click="cancelForm"
+                class="flex-1 rounded-lg border border-sage bg-white py-2 text-sm font-medium text-ink hover:bg-sage/10"
+              >
+                Cancelar
+              </button>
+              <button
+                type="submit"
+                :disabled="isSubmitting"
+                class="flex-1 rounded-lg bg-leaf py-2 text-sm font-medium text-white hover:bg-leaf/90 disabled:opacity-50"
+              >
+                <span v-if="isSubmitting">Guardando...</span>
+                <span v-else>{{ editingAppointment ? 'Actualizar' : 'Crear' }} cita</span>
+              </button>
+            </div>
+          </form>
         </div>
       </div>
     </div>
@@ -312,6 +319,11 @@ const fetchAppointments = async () => {
   if (babiesStore.activeBabyId) {
     await appointmentsStore.fetchAppointments(babiesStore.activeBabyId)
   }
+}
+
+function openNewForm() {
+  cancelForm()
+  showForm.value = true
 }
 
 const handleSubmit = async () => {

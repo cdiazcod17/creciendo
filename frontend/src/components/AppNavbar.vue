@@ -33,7 +33,6 @@
         </div>
 
         <div class="flex items-center gap-2 md:hidden">
-          <button v-if="authStore.isAuthenticated" class="btn-primary px-3 py-2 text-xs" type="button" @click="handleLogout">Cerrar sesión</button>
           <button
             class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-sage bg-white text-forest"
             type="button"
