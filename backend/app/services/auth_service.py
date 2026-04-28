@@ -17,7 +17,7 @@ class AuthService(BaseService):
     def register_user(self, payload: UserRegister) -> User:
         existing_user = self.user_repo.get_by_email(payload.email)
         if existing_user:
-            raise ValueError("El email ya está registrado")
+            raise ValueError("Email already registered")
         
         user = User(
             full_name=payload.full_name,
@@ -30,9 +30,9 @@ class AuthService(BaseService):
     def authenticate_user(self, email: str, password: str) -> User:
         user = self.user_repo.get_by_email(email)
         if not user or not verify_password(password, user.hashed_password):
-            raise ValueError("Credenciales inválidas")
+            raise ValueError("Invalid credentials")
         if not user.is_active:
-            raise ValueError("Usuario inactivo")
+            raise ValueError("Inactive user")
         return user
     
     def generate_tokens(self, user: User) -> dict:
