@@ -83,7 +83,7 @@
           <div class="mt-4 text-center">
             <h3 class="text-lg font-semibold text-ink">{{ baby.name }}</h3>
             <p class="text-sm text-forest/75">
-              {{ formatDate(baby.birth_date) }} • {{ baby.sex === 'M' ? 'Masculino' : baby.sex === 'F' ? 'Femenino' : 'No especificado' }}
+              {{ formatDate(baby.birth_date) }} • {{ baby.sex === 'male' ? 'Masculino' : baby.sex === 'female' ? 'Femenino' : 'No especificado' }}
             </p>
             <p v-if="baby.notes" class="mt-2 text-xs text-forest/60 line-clamp-2">
               {{ baby.notes }}
