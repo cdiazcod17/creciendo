@@ -6,7 +6,7 @@ class UserRegister(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True)
     full_name: str = Field(min_length=2, max_length=100)
     email: EmailStr
-    password: str
+    password: str = Field(min_length=8)
     
     @field_validator("password")
     @classmethod
@@ -15,7 +15,7 @@ class UserRegister(BaseModel):
         has_lower = any(character.islower() for character in value)
         has_digit = any(character.isdigit() for character in value)
         if not (has_upper and has_lower and has_digit):
-            raise ValueError("La contrasena debe incluir mayusculas, minusculas y numeros.")
+            raise ValueError("Password must include uppercase, lowercase, and numbers.")
         return value
 
 class UserRead(BaseModel):

@@ -1,4 +1,3 @@
-<!-- src/views/LoginView.vue -->
 <template>
   <div class="mx-auto grid max-w-5xl gap-6 lg:grid-cols-[0.95fr_1.05fr] lg:gap-8">
     <section class="card order-1 lg:order-2">
@@ -18,9 +17,14 @@
           </button>
         </div>
 
-        <p v-if="errorMessage" class="rounded-xl border border-red-300 bg-red-50 px-3 py-2 text-sm text-red-700">
-          {{ errorMessage }}
-        </p>
+        <div v-if="errorMessage" class="flex items-start space-x-3 rounded-2xl border border-red-200 bg-red-50 p-4">
+          <svg class="h-5 w-5 flex-shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <p class="text-sm font-medium text-red-800">
+            {{ errorMessage }}
+          </p>
+        </div>
 
         <button class="btn-primary w-full" type="submit" :disabled="authStore.isLoading">
           {{ authStore.isLoading ? "Ingresando..." : "Entrar" }}

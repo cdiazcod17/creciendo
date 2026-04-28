@@ -4,7 +4,22 @@ import { defineStore } from "pinia";
 import { authApi } from "../services/auth";
 
 function normalizeApiError(error, fallback) {
-  return error?.response?.data?.detail || fallback;
+  const detail = error?.response?.data?.detail;
+
+  if (typeof detail === "string") {
+    return detail;
+  }
+
+  if (Array.isArray(detail)) {
+    return detail
+      .map((err) => {
+        const field = err.loc[err.loc.length - 1];
+        return `${field}: ${err.msg}`;
+      })
+      .join(". ");
+  }
+
+  return detail || fallback;
 }
 
 export const useAuthStore = defineStore("auth", () => {
