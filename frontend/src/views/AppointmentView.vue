@@ -323,6 +323,9 @@ const fetchAppointments = async () => {
 
 function openNewForm() {
   cancelForm()
+  // Set current time in local format for the input
+  const now = new Date();
+  form.scheduled_at = new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
   showForm.value = true
 }
 
@@ -360,7 +363,9 @@ const handleSubmit = async () => {
 const editAppointment = (appointment) => {
   editingAppointment.value = appointment
   form.title = appointment.title
-  form.scheduled_at = new Date(appointment.scheduled_at).toISOString().slice(0, 16)
+  // Convert UTC string from backend to local time for datetime-local input
+  const date = new Date(appointment.scheduled_at)
+  form.scheduled_at = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16)
   form.status = appointment.status
   form.provider_name = appointment.provider_name || ''
   form.location = appointment.location || ''
