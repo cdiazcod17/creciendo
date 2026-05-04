@@ -1,13 +1,13 @@
 # Creciendo
 
-**Creciendo** es una aplicación web diseñada para el seguimiento integral de bebés desde su nacimiento hasta aproximadamente los 2 años de edad. Este proyecto es un MVP (Producto Mínimo Viable) orientado a un producto real, enfocado en ofrecer a los padres y cuidadores una herramienta robusta y segura para registrar rutinas, hitos de crecimiento y salud.
+**Creciendo** es una aplicación web diseñada para el seguimiento integral de bebés desde su nacimiento hasta aproximadamente los 2 años de edad. Este proyecto esta orientado a una necesidad real, enfocado en ofrecer a los padres y cuidadores una herramienta robusta y segura para registrar rutinas, hitos de crecimiento y salud.
 
 ---
 
-## 1. Objetivo del Producto
+## 1. Objetivo del Servicio
 Facilitar la gestión de la información del desarrollo infantil en un entorno multi-bebé, permitiendo centralizar registros de alimentación, sueño, higiene, citas médicas y parámetros de crecimiento bajo una arquitectura segura que garantiza la privacidad y la integridad de los datos.
 
-## 2. Características del MVP
+## 2. Características del Servicio
 *   **Gestión Multi-perfil:** Registro y administración de uno o más bebés bajo una misma cuenta de usuario.
 *   **Bebé Activo:** Sistema de contexto global que permite cambiar entre perfiles de bebés manteniendo la persistencia en toda la interfaz.
 *   **Registro de Eventos:** Seguimiento detallado de rutinas diarias (sueño, alimentación, pañales, medicinas y notas).
@@ -66,11 +66,6 @@ La aplicación está configurada para operar en dos ambientes: **Develop** y **P
 
 ### Configuración de CORS
 El backend está configurado para aceptar peticiones desde dominios específicos de Vercel (incluyendo dominios de preview y producción). La variable `CORS_ALLOWED_ORIGINS` gestiona esta lista.
-
-### Optimización para Base de Datos Gratuita
-Para evitar el error `FATAL: too many connections` en planes gratuitos, el backend utiliza:
-*   **Pool Limiting:** `pool_size=2` y `max_overflow=0` en la configuración de SQLAlchemy.
-*   **Single Worker:** Despliegue en Render con un solo worker de Gunicorn (`-w 1`) para minimizar el consumo de conexiones.
 
 ---
 
