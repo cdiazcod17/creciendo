@@ -378,7 +378,9 @@ function closeEventModal() {
 function editEvent(event) {
   editingEvent.value = event;
   eventForm.event_type = event.event_type;
-  eventForm.occurred_at = event.occurred_at.slice(0, 16);
+  // Convert UTC string from backend to local time for datetime-local input
+  const date = new Date(event.occurred_at);
+  eventForm.occurred_at = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
   eventForm.amount = event.amount;
   eventForm.notes = event.notes || '';
   showEventForm.value = true;
@@ -389,6 +391,9 @@ async function saveEvent() {
   isSavingEvent.value = true;
   try {
     const payload = { ...eventForm };
+    // Convert local time string from input to proper UTC ISO string
+    payload.occurred_at = new Date(eventForm.occurred_at).toISOString();
+    
     if (!payload.amount) delete payload.amount;
 
     if (editingEvent.value) {
