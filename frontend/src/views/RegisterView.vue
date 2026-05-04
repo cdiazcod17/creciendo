@@ -62,6 +62,19 @@
           </button>
         </div>
 
+        <div class="flex items-center gap-3">
+          <input
+            id="acceptTerms"
+            v-model="form.accept_terms"
+            type="checkbox"
+            class="h-4 w-4 rounded border-sage text-forest focus:ring-leaf"
+            required
+          />
+          <label for="acceptTerms" class="text-sm text-forest/70">
+            Acepto los <RouterLink to="/terminos" class="font-semibold underline">términos</RouterLink> y la <RouterLink to="/privacidad" class="font-semibold underline">política de privacidad</RouterLink>.
+          </label>
+        </div>
+
         <div v-if="errorMessage" class="flex items-start space-x-3 rounded-2xl border border-red-200 bg-red-50 p-4">
           <svg class="h-5 w-5 flex-shrink-0 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -125,6 +138,7 @@ const form = reactive({
   email: "",
   password: "",
   confirm_password: "",
+  accept_terms: false,
 });
 
 const errorMessage = ref("");
@@ -133,6 +147,11 @@ const showConfirmPassword = ref(false);
 
 async function onSubmit() {
   errorMessage.value = "";
+
+  if (!form.accept_terms) {
+    errorMessage.value = "Debes aceptar los términos y condiciones para continuar";
+    return;
+  }
 
   if (form.password !== form.confirm_password) {
     errorMessage.value = "Las contraseñas no coinciden";

@@ -18,6 +18,14 @@
       </div>
 
       <div>
+        <p class="text-sm font-semibold text-forest">Legal</p>
+        <div class="mt-4 flex flex-col gap-2 text-sm text-forest/70">
+          <RouterLink to="/terminos">Términos y condiciones</RouterLink>
+          <RouterLink to="/privacidad">Privacidad</RouterLink>
+        </div>
+      </div>
+
+      <div>
         <p class="text-sm font-semibold text-forest">Contacto</p>
         <div class="mt-4 space-y-2 text-sm text-forest/70">
           <p>hola@creciendo.app</p>
