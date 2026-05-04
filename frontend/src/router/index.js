@@ -5,6 +5,8 @@ import LoginView from '../views/LoginView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import HomeView from '@/views/HomeView.vue'
 import NotFoundView from '@/views/NotFoundView.vue'
+import TermsView from '@/views/TermsView.vue'
+import PrivacyView from '@/views/PrivacyView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,6 +40,16 @@ const router = createRouter({
       name: 'register',
       component: RegisterView,
       meta: { guestOnly: true },
+    },
+    {
+      path: '/terminos',
+      name: 'terms',
+      component: TermsView,
+    },
+    {
+      path: '/privacidad',
+      name: 'privacy',
+      component: PrivacyView,
     },
     {
       path: '/dashboard',
