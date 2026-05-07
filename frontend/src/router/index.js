@@ -100,6 +100,12 @@ const router = createRouter({
       meta: { requiresAuth: true },
     },
     {
+      path: '/crecimiento',
+      name: 'growth',
+      component: () => import('../views/GrowthView.vue'),
+      meta: { requiresAuth: true },
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'not-found',
       component: NotFoundView,
