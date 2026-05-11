@@ -1,5 +1,5 @@
 import secrets
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, timezone
 from sqlalchemy.orm import Session
 from app.services.base import BaseService
 from app.models.user import User
@@ -80,7 +80,7 @@ class AuthService(BaseService):
         self.password_reset_repo.delete_by_user_id(user.id)
         
         token = secrets.token_urlsafe(32)
-        expires_at = datetime.now() + timedelta(hours=1)
+        expires_at = datetime.now(timezone.utc) + timedelta(hours=1)
         
         reset_token = PasswordResetToken(
             token=token,
@@ -97,7 +97,11 @@ class AuthService(BaseService):
         if not reset_token:
             raise ValueError("Token inválido")
         
-        if reset_token.expires_at < datetime.now():
+        expires_at = reset_token.expires_at
+        if expires_at.tzinfo is None:
+            expires_at = expires_at.replace(tzinfo=timezone.utc)
+            
+        if expires_at < datetime.now(timezone.utc):
             self.password_reset_repo.delete(reset_token)
             raise ValueError("Token expirado")
         
