@@ -41,6 +41,9 @@ def get_appointment_repository(db: Session = Depends(get_db)) -> AppointmentRepo
 def get_health_note_repository(db: Session = Depends(get_db)) -> HealthNoteRepository:
     return HealthNoteRepository(db)
 
+def get_email_service() -> EmailService:
+    return EmailService()
+
 def get_auth_service(
     db: Session = Depends(get_db),
     user_repo: UserRepository = Depends(get_user_repository),
@@ -92,6 +95,3 @@ def get_health_note_service(
     health_note_repo: HealthNoteRepository = Depends(get_health_note_repository)
 ) -> HealthNoteService:
     return HealthNoteService(db, health_note_repo)
-
-def get_email_service() -> EmailService:
-    return EmailService()
