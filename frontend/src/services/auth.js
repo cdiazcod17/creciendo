@@ -32,4 +32,14 @@ export const authApi = {
   async logout() {
     await http.post("/auth/logout");
   },
-};
+
+  async forgotPassword(email) {
+    const response = await http.post("/auth/forgot-password", { email });
+    return response.data;
+  },
+
+  async resetPassword(payload) {
+    const response = await http.post("/auth/reset-password", payload);
+    return response.data;
+  },
+  };
