@@ -1,18 +1,24 @@
+import secrets
+from datetime import timedelta, datetime
 from sqlalchemy.orm import Session
 from app.services.base import BaseService
 from app.models.user import User
+from app.models.password_reset import PasswordResetToken
 from app.schemas.user import UserRegister
 from app.core.security import get_password_hash, verify_password, create_access_token
-from datetime import timedelta
 from app.core.config import get_settings
 from jose import jwt
 from app.core.enums import Roles
 from app.repositories.user_repository import UserRepository
+from app.repositories.password_reset_repository import PasswordResetRepository
+from app.services.email_service import EmailService
 
 class AuthService(BaseService):
-    def __init__(self, session: Session, user_repo: UserRepository):
+    def __init__(self, session: Session, user_repo: UserRepository, password_reset_repo: PasswordResetRepository, email_service: EmailService):
         super().__init__(session)
         self.user_repo = user_repo
+        self.password_reset_repo = password_reset_repo
+        self.email_service = email_service
 
     def register_user(self, payload: UserRegister) -> User:
         existing_user = self.user_repo.get_by_email(payload.email)
@@ -64,3 +70,43 @@ class AuthService(BaseService):
             expires_delta=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         )
         return {"access_token": access_token, "token_type": "bearer"}
+
+    def request_password_reset(self, email: str) -> None:
+        user = self.user_repo.get_by_email(email)
+        if not user:
+            return None
+        
+        # Delete any existing tokens for this user
+        self.password_reset_repo.delete_by_user_id(user.id)
+        
+        token = secrets.token_urlsafe(32)
+        expires_at = datetime.now() + timedelta(hours=1)
+        
+        reset_token = PasswordResetToken(
+            token=token,
+            expires_at=expires_at,
+            user_id=user.id
+        )
+        self.password_reset_repo.add(reset_token)
+        
+        # Send the email via Resend
+        self.email_service.send_password_reset_email(user.email, token)
+
+    def reset_password(self, token: str, new_password: str) -> None:
+        reset_token = self.password_reset_repo.get_by_token(token)
+        if not reset_token:
+            raise ValueError("Token inválido")
+        
+        if reset_token.expires_at < datetime.now():
+            self.password_reset_repo.delete(reset_token)
+            raise ValueError("Token expirado")
+        
+        user = self.user_repo.get(reset_token.user_id)
+        if not user:
+            raise ValueError("Usuario no encontrado")
+        
+        user.hashed_password = get_password_hash(new_password)
+        self.user_repo.update()
+        
+        # Delete the token after successful reset
+        self.password_reset_repo.delete(reset_token)

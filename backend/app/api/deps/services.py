@@ -10,6 +10,7 @@ from app.services.growth_service import GrowthService
 from app.services.appointment_service import AppointmentService
 from app.services.baby_context_service import BabyContextService
 from app.services.health_notes import HealthNoteService
+from app.services.email_service import EmailService
 
 from app.repositories.user_repository import UserRepository
 from app.repositories.baby_repository import BabyRepository
@@ -17,9 +18,13 @@ from app.repositories.event_repository import EventRepository
 from app.repositories.growth_repository import GrowthRepository
 from app.repositories.appointment_repository import AppointmentRepository
 from app.repositories.health_note_repository import HealthNoteRepository
+from app.repositories.password_reset_repository import PasswordResetRepository
 
 def get_user_repository(db: Session = Depends(get_db)) -> UserRepository:
     return UserRepository(db)
+
+def get_password_reset_repository(db: Session = Depends(get_db)) -> PasswordResetRepository:
+    return PasswordResetRepository(db)
 
 def get_baby_repository(db: Session = Depends(get_db)) -> BabyRepository:
     return BabyRepository(db)
@@ -38,9 +43,11 @@ def get_health_note_repository(db: Session = Depends(get_db)) -> HealthNoteRepos
 
 def get_auth_service(
     db: Session = Depends(get_db),
-    user_repo: UserRepository = Depends(get_user_repository)
+    user_repo: UserRepository = Depends(get_user_repository),
+    password_reset_repo: PasswordResetRepository = Depends(get_password_reset_repository),
+    email_service: EmailService = Depends(get_email_service)
 ) -> AuthService:
-    return AuthService(db, user_repo)
+    return AuthService(db, user_repo, password_reset_repo, email_service)
 
 def get_baby_service(
     db: Session = Depends(get_db),
@@ -85,3 +92,6 @@ def get_health_note_service(
     health_note_repo: HealthNoteRepository = Depends(get_health_note_repository)
 ) -> HealthNoteService:
     return HealthNoteService(db, health_note_repo)
+
+def get_email_service() -> EmailService:
+    return EmailService()
