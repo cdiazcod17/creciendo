@@ -10,7 +10,12 @@
           <input id="email" v-model="form.email" class="input" type="email" required />
         </div>
         <div class="relative">
-          <label class="label" for="password">Contraseña</label>
+          <div class="flex items-center justify-between">
+            <label class="label" for="password">Contraseña</label>
+            <RouterLink class="text-xs font-semibold text-forest/70 hover:text-forest" to="/forgot-password">
+              ¿Olvidaste tu contraseña?
+            </RouterLink>
+          </div>
           <input id="password" v-model="form.password" class="input pr-16" :type="showPassword ? 'text' : 'password'" required />
           <button class="password-toggle" type="button" @click="showPassword = !showPassword">
             {{ showPassword ? "Ocultar" : "Ver" }}

@@ -26,3 +26,20 @@ class UserRead(BaseModel):
     role: Roles
     active_baby_id: uuid.UUID | None = None
     model_config = ConfigDict(from_attributes=True)
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+class ResetPasswordRequest(BaseModel):
+    token: str
+    new_password: str = Field(min_length=8)
+
+    @field_validator("new_password")
+    @classmethod
+    def validate_password_strength(cls, value: str) -> str:
+        has_upper = any(character.isupper() for character in value)
+        has_lower = any(character.islower() for character in value)
+        has_digit = any(character.isdigit() for character in value)
+        if not (has_upper and has_lower and has_digit):
+            raise ValueError("Password must include uppercase, lowercase, and numbers.")
+        return value

@@ -5,3 +5,4 @@ from app.models.event import Event
 from app.models.growth_record import GrowthRecord
 from app.models.appointment import Appointment
 from app.models.health_note import HealthNote
+from app.models.password_reset import PasswordResetToken

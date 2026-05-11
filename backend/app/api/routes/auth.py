@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from app.api.deps.auth import get_current_active_user
 from app.api.deps.services import get_auth_service, get_baby_context_service
 from app.models.user import User
-from app.schemas.user import UserRegister, UserRead
+from app.schemas.user import UserRegister, UserRead, ForgotPasswordRequest, ResetPasswordRequest
 from app.schemas.user_context import SetActiveBabyRequest
 from app.services.auth_service import AuthService
 from app.services.baby_context_service import BabyContextService
@@ -84,3 +84,27 @@ def set_active_baby(
         baby_id=payload.baby_id,
     )
     return {"active_baby_id": str(user.active_baby_id)}
+
+
+@router.post("/forgot-password")
+def forgot_password(
+    payload: ForgotPasswordRequest,
+    service: AuthService = Depends(get_auth_service),
+):
+    service.request_password_reset(payload.email)
+    return {"msg": "Si el correo está registrado, recibirás un enlace para restablecer tu contraseña."}
+
+
+@router.post("/reset-password")
+def reset_password(
+    payload: ResetPasswordRequest,
+    service: AuthService = Depends(get_auth_service),
+):
+    try:
+        service.reset_password(payload.token, payload.new_password)
+        return {"msg": "Contraseña actualizada exitosamente."}
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=str(e),
+        )
