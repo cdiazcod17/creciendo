@@ -71,7 +71,7 @@
             required
           />
           <label for="acceptTerms" class="text-sm text-forest/70">
-            Acepto los <RouterLink to="/terminos" class="font-semibold underline">términos</RouterLink> y la <RouterLink to="/privacidad" class="font-semibold underline">política de privacidad</RouterLink>.
+            Acepto los <button type="button" @click="showLegalModal = true" class="font-semibold underline hover:text-leaf">términos</button> y la <button type="button" @click="showLegalModal = true" class="font-semibold underline hover:text-leaf">política de privacidad</button>.
           </label>
         </div>
 
@@ -93,6 +93,12 @@
         ¿Ya tienes cuenta?
         <RouterLink class="font-semibold text-forest" to="/login">Inicia sesión</RouterLink>
       </p>
+
+      <LegalModal
+        :open="showLegalModal"
+        @close="showLegalModal = false"
+        @accept="onAcceptLegal"
+      />
     </section>
 
     <section class="hero-panel order-2 flex flex-col justify-between px-5 py-6 sm:p-8 lg:order-1">
@@ -128,6 +134,7 @@ import { useRouter } from "vue-router";
 
 import { useAuthStore } from "../stores/auth";
 import { useToast } from "../composables/toast";
+import LegalModal from "../components/LegalModal.vue";
 
 const router = useRouter();
 const authStore = useAuthStore();
@@ -144,6 +151,12 @@ const form = reactive({
 const errorMessage = ref("");
 const showPassword = ref(false);
 const showConfirmPassword = ref(false);
+const showLegalModal = ref(false);
+
+function onAcceptLegal() {
+  form.accept_terms = true;
+  showLegalModal.value = false;
+}
 
 async function onSubmit() {
   errorMessage.value = "";
