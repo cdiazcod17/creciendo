@@ -5,6 +5,9 @@ from app.models.baby import Baby
 from app.models.user import User
 from app.repositories.baby_repository import BabyRepository
 from app.repositories.user_repository import UserRepository
+from app.core.logger import setup_logger
+
+logger = setup_logger(__name__)
 
 class BabyContextService:
     def __init__(self, session: Session, baby_repo: BabyRepository, user_repo: UserRepository) -> None:
@@ -16,6 +19,7 @@ class BabyContextService:
         baby = self.baby_repo.get_by_id_and_user_id(UUID(str(baby_id)), user_id)
 
         if baby is None:
+            logger.warning(f"Baby {baby_id} not found for user {user_id}")
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Bebé no encontrado.",
@@ -29,4 +33,5 @@ class BabyContextService:
 
         user.active_baby_id = target_uuid
         self.user_repo.update()
+        logger.info(f"User {user.id} set active baby to {target_uuid}")
         return user

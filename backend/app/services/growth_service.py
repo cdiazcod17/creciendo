@@ -5,6 +5,9 @@ from app.models.growth_record import GrowthRecord
 from app.schemas.growth_record import GrowthCreate, GrowthUpdate
 from app.services.base import BaseService
 from app.repositories.growth_repository import GrowthRepository
+from app.core.logger import setup_logger
+
+logger = setup_logger(__name__)
 
 class GrowthService(BaseService):
     def __init__(self, session: Session, growth_repo: GrowthRepository):
@@ -14,6 +17,7 @@ class GrowthService(BaseService):
     def _get_growth_record(self, baby_id: UUID, growth_id: UUID) -> GrowthRecord:
         record = self.growth_repo.get_by_id_and_baby_id(growth_id, baby_id)
         if not record:
+            logger.warning(f"Growth record {growth_id} not found for baby {baby_id}")
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Registro de crecimiento no encontrado",
@@ -29,6 +33,7 @@ class GrowthService(BaseService):
             head_circumference_cm=payload.head_circumference_cm,
             notes=payload.notes,
         )
+        logger.info(f"Created growth record for baby {baby_id}")
         return self.growth_repo.add(record)
 
     def list_growth_records(self, baby_id: UUID) -> list[GrowthRecord]:
@@ -47,6 +52,7 @@ class GrowthService(BaseService):
         update_data = payload.model_dump(exclude_unset=True)
 
         if not update_data:
+            logger.warning(f"Empty update payload for growth record {growth_id}")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="No se enviaron campos para actualizar",
@@ -56,8 +62,10 @@ class GrowthService(BaseService):
             setattr(record, field, value)
 
         self.growth_repo.update()
+        logger.info(f"Updated growth record {growth_id} for baby {baby_id}")
         return record
 
     def delete_growth_record(self, baby_id: UUID, growth_id: UUID) -> None:
         record = self._get_growth_record(baby_id, growth_id)
         self.growth_repo.delete(record)
+        logger.info(f"Deleted growth record {growth_id} for baby {baby_id}")

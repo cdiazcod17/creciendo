@@ -6,6 +6,9 @@ from app.schemas.event import EventCreate, EventUpdate
 from app.services.base import BaseService
 from app.repositories.event_repository import EventRepository
 from app.core.enums import EventType
+from app.core.logger import setup_logger
+
+logger = setup_logger(__name__)
 
 class EventService(BaseService):
     def __init__(self, session: Session, event_repo: EventRepository):
@@ -15,6 +18,7 @@ class EventService(BaseService):
     def _get_event_in_baby(self, baby_id: UUID, event_id: UUID) -> Event:
         event = self.event_repo.get_by_id_and_baby_id(event_id, baby_id)
         if not event:
+            logger.warning(f"Event {event_id} not found for baby {baby_id}")
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Evento no encontrado",
@@ -29,6 +33,7 @@ class EventService(BaseService):
             amount=payload.amount,
             notes=payload.notes,
         )
+        logger.info(f"Creating {payload.event_type} event for baby {baby_id}")
         return self.event_repo.add(event)
 
     def list_events(
@@ -48,6 +53,7 @@ class EventService(BaseService):
         update_data = payload.model_dump(exclude_unset=True)
 
         if not update_data:
+            logger.warning(f"Empty update payload for event {event_id}")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="No se enviaron campos para actualizar",
@@ -57,8 +63,10 @@ class EventService(BaseService):
             setattr(event, field, value)
 
         self.event_repo.update()
+        logger.info(f"Updated event {event_id} for baby {baby_id}")
         return event
 
     def delete_event(self, baby_id: UUID, event_id: UUID) -> None:
         event = self._get_event_in_baby(baby_id, event_id)
         self.event_repo.delete(event)
+        logger.info(f"Deleted event {event_id} for baby {baby_id}")

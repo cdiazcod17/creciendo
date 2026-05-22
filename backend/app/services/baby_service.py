@@ -6,6 +6,9 @@ from app.models.user import User
 from app.schemas.baby import BabyCreate, BabyUpdate
 from app.services.base import BaseService
 from app.repositories.baby_repository import BabyRepository
+from app.core.logger import setup_logger
+
+logger = setup_logger(__name__)
 
 class BabyService(BaseService):
     def __init__(self, session: Session, baby_repo: BabyRepository):
@@ -21,6 +24,7 @@ class BabyService(BaseService):
             photo_url=payload.photo_url,
             user_id=current_user.id,
         )
+        logger.info(f"Created baby {baby.name} for user {current_user.id}")
         return self.baby_repo.add(baby)
 
     def list_babies(self, current_user: User) -> list[Baby]:
@@ -29,6 +33,7 @@ class BabyService(BaseService):
     def get_baby_by_id(self, baby_id: UUID, current_user: User) -> Baby:
         baby = self.baby_repo.get_by_id_and_user_id(baby_id, current_user.id)
         if not baby:
+            logger.warning(f"Baby {baby_id} not found for user {current_user.id}")
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Bebé no encontrado",
@@ -40,6 +45,7 @@ class BabyService(BaseService):
         update_data = payload.model_dump(exclude_unset=True)
 
         if not update_data:
+            logger.warning(f"Empty update payload for baby {baby_id}")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="No se enviaron campos para actualizar",
@@ -49,6 +55,7 @@ class BabyService(BaseService):
             setattr(baby, field, value)
 
         self.baby_repo.update()
+        logger.info(f"Updated baby {baby_id} for user {current_user.id}")
         return baby
 
     def delete_baby(self, baby_id: UUID, current_user: User) -> None:
@@ -72,3 +79,4 @@ class BabyService(BaseService):
 
         self.session.delete(baby)
         self.session.commit()
+        logger.info(f"Deleted baby {baby_id} for user {current_user.id}")
