@@ -10,9 +10,11 @@ Facilitar la gestión de la información del desarrollo infantil en un entorno m
 ## 2. Características del Servicio
 *   **Gestión Multi-perfil:** Registro y administración de uno o más bebés bajo una misma cuenta de usuario.
 *   **Bebé Activo:** Sistema de contexto global que permite cambiar entre perfiles de bebés manteniendo la persistencia en toda la interfaz.
-*   **Registro de Eventos:** Seguimiento detallado de rutinas diarias (sueño, alimentación, pañales, medicinas y notas).
+*   **Registro de Eventos:** Seguimiento detallado de rutinas diarias (sueño, alimentación, pañales y medicinas).
+*   **Notas de Salud:** Registro independiente para observaciones médicas, síntomas o recomendaciones del pediatra con soporte para borrado lógico.
 *   **Agenda Médica:** Gestión de citas y consultas médicas.
 *   **Control de Crecimiento:** Registro de peso, talla y perímetro cefálico.
+*   **Recuperación de Contraseña:** Flujo seguro de restablecimiento de acceso mediante tokens temporales enviados por correo electrónico.
 *   **Panel de Control (Dashboard):** Vista resumida del estado actual, últimos eventos y próximas actividades del bebé seleccionado.
 
 ## 3. Stack Tecnológico
@@ -25,6 +27,7 @@ Facilitar la gestión de la información del desarrollo infantil en un entorno m
 *   **Base de Datos:** PostgreSQL (Alojada en Clever Cloud)
 *   **Validación:** Pydantic V2
 *   **Seguridad:** JWT (JSON Web Tokens) y Passlib (BCrypt)
+*   **Logs:** Sistema de logging centralizado para auditoría y diagnóstico.
 
 ### Frontend
 *   **Framework:** Vue 3 (Composition API)
@@ -32,6 +35,7 @@ Facilitar la gestión de la información del desarrollo infantil en un entorno m
 *   **Estado Global:** Pinia
 *   **Enrutado:** Vue Router
 *   **Estilos:** Tailwind CSS v4 (Configuración vía @theme en CSS)
+*   **Validación Legal:** Modal integrado en el registro para aceptación de términos y privacidad.
 *   **Cliente HTTP:** Axios
 *   **Despliegue:** Vercel
 
@@ -43,7 +47,7 @@ El proyecto sigue una separación clara de responsabilidades para facilitar el m
 
 ### Backend: Arquitectura por Capas
 1.  **Routers:** Definición de endpoints y manejo de peticiones HTTP.
-2.  **Services:** Contienen la lógica de negocio y coordinación de tareas.
+2.  **Services:** Contienen la lógica de negocio y coordinación de tareas. Incluyen integración con el sistema de logs.
 3.  **Repositories:** Encapsulan el acceso a datos y consultas a la base de datos.
 4.  **Schemas:** Modelos Pydantic para validación de entrada/salida (DTOs).
 5.  **Models:** Definición de entidades de base de datos (SQLAlchemy).
@@ -52,6 +56,7 @@ El proyecto sigue una separación clara de responsabilidades para facilitar el m
 1.  **Views:** Componentes de página que interactúan exclusivamente con los stores.
 2.  **Stores (Pinia):** Gestión del estado global y lógica de sincronización con el backend.
 3.  **Services:** Clientes HTTP que realizan las llamadas a la API mediante Axios.
+4.  **Components:** Elementos de interfaz reutilizables (Modales, Navbars, Toasts).
 
 ---
 
