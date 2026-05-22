@@ -6,6 +6,9 @@ from app.models.health_note import HealthNote
 from app.schemas.health_note import HealthNoteCreate, HealthNoteUpdate
 from app.services.base import BaseService
 from app.repositories.health_note_repository import HealthNoteRepository
+from app.core.logger import setup_logger
+
+logger = setup_logger(__name__)
 
 class HealthNoteService(BaseService):
     def __init__(self, session: Session, health_note_repo: HealthNoteRepository):
@@ -47,11 +50,13 @@ class HealthNoteService(BaseService):
             content=payload.content.strip(),
             recorded_at=payload.recorded_at,
         )
+        logger.info(f"Creating health note for baby {payload.baby_id}")
         return self.health_note_repo.add(health_note)
 
     def get_health_note(self, baby_id: UUID, health_note_id: UUID) -> HealthNote:
         note = self.health_note_repo.get_by_id_and_baby_id(health_note_id, baby_id)
         if not note:
+             logger.warning(f"Health note {health_note_id} not found for baby {baby_id}")
              raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Nota de salud no encontrada.",
@@ -73,9 +78,11 @@ class HealthNoteService(BaseService):
             setattr(health_note, field_name, value)
 
         self.health_note_repo.update()
+        logger.info(f"Updated health note {health_note_id} for baby {baby_id}")
         return health_note
 
     def delete_health_note(self, baby_id: UUID, health_note_id: UUID) -> None:
         health_note = self.get_health_note(baby_id, health_note_id)
         health_note.deleted_at = datetime.now(timezone.utc)
         self.health_note_repo.update()
+        logger.info(f"Soft deleted health note {health_note_id} for baby {baby_id}")

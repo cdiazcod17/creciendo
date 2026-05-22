@@ -1,5 +1,8 @@
 import resend
 from app.core.config import get_settings
+from app.core.logger import setup_logger
+
+logger = setup_logger(__name__)
 
 class EmailService:
     def __init__(self):
@@ -39,7 +42,7 @@ class EmailService:
                 "html": html_content,
             }
             resend.Emails.send(params)
+            logger.info(f"Password reset email sent successfully to {email}")
         except Exception as e:
-            # En producción, usarías un logger aquí
-            print(f"Error enviando correo: {e}")
+            logger.error(f"Error enviando correo a {email}: {e}")
             raise ValueError("No se pudo enviar el correo de recuperación.")

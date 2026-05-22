@@ -3,6 +3,9 @@ from app.models.user import User
 from app.services.base import BaseService
 from app.repositories.baby_repository import BabyRepository
 from app.repositories.event_repository import EventRepository
+from app.core.logger import setup_logger
+
+logger = setup_logger(__name__)
 
 class DashboardService(BaseService):
     def __init__(self, session: Session, baby_repo: BabyRepository, event_repo: EventRepository):
@@ -11,6 +14,7 @@ class DashboardService(BaseService):
         self.event_repo = event_repo
 
     def get_user_dashboard(self, current_user: User) -> dict:
+        logger.info(f"Generating dashboard for user {current_user.id}")
         babies = self.baby_repo.list_by_user_id(current_user.id)
         baby_ids = [baby.id for baby in babies]
 
