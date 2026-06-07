@@ -12,7 +12,9 @@
             <RouterLink class="nav-link" to="/babies">Bebés</RouterLink>
             <div v-if="babiesStore.activeBaby" class="ml-2 flex items-center gap-2 rounded-full bg-leaf/10 px-3 py-1 text-xs font-medium text-leaf">
               <span class="h-1.5 w-1.5 rounded-full bg-leaf animate-pulse"></span>
-              {{ babiesStore.activeBaby.name }}
+                {{ authStore.user?.full_name }}
+              <span class="mx-1 text-forest/30">|</span>
+                {{ babiesStore.activeBaby.name }}
             </div>
           </template>
           <template v-else>
@@ -55,7 +57,9 @@
           <RouterLink class="nav-link rounded-xl px-2 py-2 hover:bg-mist" to="/babies" @click="closeMobileMenu">Bebés</RouterLink>
           <div v-if="babiesStore.activeBaby" class="mt-1 flex items-center gap-2 rounded-xl bg-leaf/10 px-3 py-2 text-sm font-medium text-leaf">
             <span class="h-1.5 w-1.5 rounded-full bg-leaf animate-pulse"></span>
-            Bebé activo: {{ babiesStore.activeBaby.name }}
+            Bebé: {{ babiesStore.activeBaby.name }}
+            <span class="mx-1 text-forest/20">|</span>
+            Usuario: {{ authStore.user?.full_name }}
           </div>
         </template>
         <template v-else>
