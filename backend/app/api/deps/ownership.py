@@ -5,6 +5,9 @@ from app.models.baby import Baby
 from app.api.deps.auth import get_current_active_user
 from app.api.deps.services import get_baby_repository
 from app.repositories.baby_repository import BabyRepository
+from app.core.logger import setup_logger
+
+logger = setup_logger(__name__)
 
 def validate_baby_ownership(
     baby_id: UUID = Path(...),
@@ -13,6 +16,7 @@ def validate_baby_ownership(
 ) -> Baby:
     baby = baby_repo.get_by_id_and_user_id(baby_id, current_user.id)
     if not baby:
+        logger.warning(f"Ownership validation failed: Baby {baby_id} not found for user {current_user.id}")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Bebé no encontrado o no tienes permisos para acceder a él."
@@ -26,6 +30,7 @@ def get_target_baby(
 ) -> Baby:
     target_id = baby_id or current_user.active_baby_id
     if not target_id:
+        logger.warning(f"Target baby resolution failed: No baby_id provided and no active baby for user {current_user.id}")
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="No se proporcionó baby_id y no hay un bebé activo seleccionado."
@@ -36,6 +41,7 @@ def get_target_baby(
         try:
             target_id = UUID(target_id)
         except ValueError:
+             logger.warning(f"Target baby resolution failed: Invalid baby UUID format '{target_id}'")
              raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="ID de bebé inválido."
@@ -43,6 +49,7 @@ def get_target_baby(
 
     baby = baby_repo.get_by_id_and_user_id(target_id, current_user.id)
     if not baby:
+        logger.warning(f"Target baby resolution failed: Baby {target_id} not found for user {current_user.id}")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Bebé no encontrado o no tienes permisos."

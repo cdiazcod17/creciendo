@@ -5,6 +5,9 @@ from app.models.appointment import Appointment
 from app.schemas.appointment import AppointmentCreate, AppointmentUpdate
 from app.services.base import BaseService
 from app.repositories.appointment_repository import AppointmentRepository
+from app.core.logger import setup_logger
+
+logger = setup_logger(__name__)
 
 class AppointmentService(BaseService):
     def __init__(self, session: Session, appointment_repo: AppointmentRepository):
@@ -14,6 +17,7 @@ class AppointmentService(BaseService):
     def _get_appointment(self, baby_id: UUID, appointment_id: UUID) -> Appointment:
         appointment = self.appointment_repo.get_by_id_and_baby_id(appointment_id, baby_id)
         if not appointment:
+            logger.warning(f"Appointment {appointment_id} not found for baby {baby_id}")
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Cita no encontrada",
@@ -30,6 +34,7 @@ class AppointmentService(BaseService):
             location=payload.location,
             notes=payload.notes,
         )
+        logger.info(f"Created appointment for baby {baby_id}")
         return self.appointment_repo.add(appointment)
 
     def list_appointments(self, baby_id: UUID) -> list[Appointment]:
@@ -51,6 +56,7 @@ class AppointmentService(BaseService):
         update_data = payload.model_dump(exclude_unset=True)
 
         if not update_data:
+            logger.warning(f"Empty update payload for appointment {appointment_id}")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="No se enviaron campos para actualizar",
@@ -60,8 +66,10 @@ class AppointmentService(BaseService):
             setattr(appointment, field, value)
 
         self.appointment_repo.update()
+        logger.info(f"Updated appointment {appointment_id} for baby {baby_id}")
         return appointment
 
     def delete_appointment(self, baby_id: UUID, appointment_id: UUID) -> None:
         appointment = self._get_appointment(baby_id, appointment_id)
         self.appointment_repo.delete(appointment)
+        logger.info(f"Deleted appointment {appointment_id} for baby {baby_id}")
