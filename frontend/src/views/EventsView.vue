@@ -138,47 +138,42 @@
             </div>
 
             <div v-else class="space-y-4">
-              <article 
-                v-for="event in filteredEvents" 
+              <article
+                v-for="event in filteredEvents"
                 :key="event.id"
-                class="group relative flex items-start gap-4 p-5 rounded-3xl border border-sage bg-white hover:shadow-md transition-all"
+                class="group flex items-start gap-4 p-5 rounded-3xl border border-sage bg-white hover:shadow-md transition-all"
               >
                 <div :class="getTypeColor(event.event_type)" class="flex-shrink-0 h-12 w-12 rounded-2xl flex items-center justify-center">
                   <component :is="getTypeIcon(event.event_type)" class="h-6 w-6" />
                 </div>
 
                 <div class="flex-1 min-w-0">
-                  <div class="flex items-center justify-between mb-1">
-                    <h3 class="font-semibold text-ink text-sm">
-                      {{ getEventLabel(event.event_type) }}
-                      <span v-if="event.amount" class="text-forest/60 font-normal ml-1">
-                        ({{ event.amount }} ml/min)
-                      </span>
-                    </h3>
-                    <time class="text-[10px] uppercase tracking-wider text-forest/40 font-bold">
-                      {{ formatTime(event.occurred_at) }}
-                    </time>
-                  </div>
+                  <h3 class="font-semibold text-ink text-sm mb-1">
+                    {{ getEventLabel(event.event_type) }}
+                    <span v-if="event.amount" class="text-forest/60 font-normal ml-1">
+                      ({{ event.amount }} ml/min)
+                    </span>
+                  </h3>
                   <p class="text-sm text-forest/75 line-clamp-2">
                     {{ event.notes || getDefaultNote(event.event_type) }}
                   </p>
-                  <p class="mt-2 text-[11px] text-forest/40">
-                    {{ formatDate(event.occurred_at) }}
-                  </p>
-                </div>
-
-                
-                <div class="absolute top-4 right-4 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button @click="editEvent(event)" class="p-2 text-forest/60 hover:text-leaf hover:bg-leaf/10 rounded-lg transition-colors">
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                  </button>
-                  <button @click="confirmDeleteEvent(event)" class="p-2 text-forest/60 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                    </svg>
-                  </button>
+                  <div class="mt-3 flex items-center justify-between gap-2">
+                    <time class="text-[11px] uppercase tracking-wider text-forest/40 font-bold">
+                      {{ formatEventDateTime(event.occurred_at) }}
+                    </time>
+                    <div class="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button @click="editEvent(event)" class="p-1.5 text-forest/50 hover:text-leaf hover:bg-leaf/10 rounded-lg transition-colors">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                      </button>
+                      <button @click="confirmDeleteEvent(event)" class="p-1.5 text-forest/50 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
                 </div>
               </article>
             </div>
@@ -318,6 +313,18 @@ const filteredEvents = computed(() => {
 // Helpers
 const formatDate = (val) => val ? new Date(val).toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' }) : '';
 const formatTime = (val) => val ? new Date(val).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) : '';
+
+function formatEventDateTime(val) {
+  if (!val) return '';
+  const date = new Date(val);
+  const now = new Date();
+  const yesterday = new Date(now);
+  yesterday.setDate(yesterday.getDate() - 1);
+  const time = date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+  if (date.toDateString() === now.toDateString()) return `Hoy · ${time}`;
+  if (date.toDateString() === yesterday.toDateString()) return `Ayer · ${time}`;
+  return `${date.getDate()} ${date.toLocaleDateString('es-ES', { month: 'short' }).replace('.', '')} · ${time}`;
+}
 
 const babyAge = computed(() => {
   if (!baby.value?.birth_date) return "Edad desconocida";
