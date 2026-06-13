@@ -1,9 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel
 
 from app.api.deps.auth import get_current_active_user
 from app.api.deps.services import get_auth_service, get_baby_context_service
+from app.core.limiter import limiter
 from app.models.user import User
 from app.schemas.user import UserRegister, UserRead, ForgotPasswordRequest, ResetPasswordRequest
 from app.schemas.user_context import SetActiveBabyRequest
@@ -18,7 +19,9 @@ class RefreshTokenRequest(BaseModel):
 
 
 @router.post("/register", response_model=UserRead, status_code=status.HTTP_201_CREATED)
+@limiter.limit("3/minute")
 def register(
+    request: Request,
     payload: UserRegister,
     service: AuthService = Depends(get_auth_service),
 ):
@@ -32,7 +35,9 @@ def register(
 
 
 @router.post("/login")
+@limiter.limit("5/minute")
 def login(
+    request: Request,
     form_data: OAuth2PasswordRequestForm = Depends(),
     service: AuthService = Depends(get_auth_service),
 ):
@@ -62,7 +67,11 @@ def refresh(
 
 
 @router.post("/logout")
-def logout():
+def logout(
+    current_user: User = Depends(get_current_active_user),
+    service: AuthService = Depends(get_auth_service),
+):
+    service.logout_user(current_user)
     return {"msg": "Logout exitoso"}
 
 
@@ -87,7 +96,9 @@ def set_active_baby(
 
 
 @router.post("/forgot-password")
+@limiter.limit("3/minute")
 def forgot_password(
+    request: Request,
     payload: ForgotPasswordRequest,
     service: AuthService = Depends(get_auth_service),
 ):
@@ -96,7 +107,9 @@ def forgot_password(
 
 
 @router.post("/reset-password")
+@limiter.limit("3/minute")
 def reset_password(
+    request: Request,
     payload: ResetPasswordRequest,
     service: AuthService = Depends(get_auth_service),
 ):
