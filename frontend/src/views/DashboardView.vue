@@ -59,6 +59,21 @@
                   {{ getAge(baby.birth_date) }} • {{ formatDate(baby.birth_date) }}
                 </p>
               </div>
+              <!-- Métricas de crecimiento -->
+              <div v-if="growthStore.getLatestRecordByBabyId(baby.id)" class="shrink-0 flex flex-col items-end gap-1">
+                <div v-if="growthStore.getLatestRecordByBabyId(baby.id).weight_kg" class="flex items-baseline gap-1">
+                  <span class="text-[9px] font-bold uppercase tracking-wider text-forest/35">Peso</span>
+                  <span class="text-[12px] font-bold text-ink leading-none">{{ growthStore.getLatestRecordByBabyId(baby.id).weight_kg }}<span class="text-[9px] font-medium text-forest/50"> kg</span></span>
+                </div>
+                <div v-if="growthStore.getLatestRecordByBabyId(baby.id).height_cm" class="flex items-baseline gap-1">
+                  <span class="text-[9px] font-bold uppercase tracking-wider text-forest/35">Talla</span>
+                  <span class="text-[12px] font-bold text-ink leading-none">{{ growthStore.getLatestRecordByBabyId(baby.id).height_cm }}<span class="text-[9px] font-medium text-forest/50"> cm</span></span>
+                </div>
+                <div v-if="growthStore.getLatestRecordByBabyId(baby.id).head_circumference_cm" class="flex items-baseline gap-1">
+                  <span class="text-[9px] font-bold uppercase tracking-wider text-forest/35">CC</span>
+                  <span class="text-[12px] font-bold text-ink leading-none">{{ growthStore.getLatestRecordByBabyId(baby.id).head_circumference_cm }}<span class="text-[9px] font-medium text-forest/50"> cm</span></span>
+                </div>
+              </div>
             </div>
 
             <!-- PRÓXIMA CITA -->
@@ -106,7 +121,7 @@
                   <div class="min-w-0 flex-1">
                     <div class="flex items-center justify-between gap-2">
                       <span class="truncate text-[13px] font-bold text-ink">{{ getEventLabel(event.event_type) }}</span>
-                      <span class="whitespace-nowrap text-[10px] font-semibold text-forest/30 uppercase">{{ formatTime(event.occurred_at) }}</span>
+                      <span class="whitespace-nowrap text-[10px] font-semibold text-forest/30 uppercase">{{ formatEventDateTime(event.occurred_at) }}</span>
                     </div>
                     <p v-if="event.notes" class="mt-0.5 line-clamp-1 text-xs leading-tight text-forest/60">
                       {{ event.notes }}
@@ -165,12 +180,14 @@ import { useBabiesStore } from '../stores/babies'
 import { useAuthStore } from '../stores/auth'
 import { useEventsStore } from '../stores/events'
 import { useAppointmentsStore } from '../stores/appointments'
+import { useGrowthStore } from '../stores/growth'
 import { useToast } from '../composables/toast'
 
 const babiesStore = useBabiesStore()
 const authStore = useAuthStore()
 const eventsStore = useEventsStore()
 const appointmentsStore = useAppointmentsStore()
+const growthStore = useGrowthStore()
 const toast = useToast()
 
 const showAddBabyModal = ref(false)
@@ -213,7 +230,8 @@ async function initializeDashboard() {
     // Carga paralela de eventos y citas para todos los bebés
     await Promise.all([
       eventsStore.fetchEventsForMultipleBabies(babiesStore.babies),
-      appointmentsStore.fetchAppointmentsForMultipleBabies(babiesStore.babies)
+      appointmentsStore.fetchAppointmentsForMultipleBabies(babiesStore.babies),
+      growthStore.fetchRecordsForMultipleBabies(babiesStore.babies)
     ]);
   }
 }
@@ -232,6 +250,17 @@ function getAge(birthDate) {
 
 const formatDate = (d) => new Date(d).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' });
 const formatTime = (d) => new Date(d).toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+
+function formatEventDateTime(d) {
+  const date = new Date(d)
+  const now = new Date()
+  const yesterday = new Date(now)
+  yesterday.setDate(yesterday.getDate() - 1)
+  const time = date.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })
+  if (date.toDateString() === now.toDateString()) return `Hoy ${time}`
+  if (date.toDateString() === yesterday.toDateString()) return `Ayer ${time}`
+  return `${date.getDate()} ${date.toLocaleDateString('es-ES', { month: 'short' }).replace('.', '')} ${time}`
+}
 const getAppointmentDay = (d) => new Date(d).getDate();
 const getAppointmentMonth = (d) => new Date(d).toLocaleDateString('es-ES', { month: 'short' }).replace('.', '');
 
