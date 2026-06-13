@@ -2,9 +2,14 @@ from fastapi import FastAPI
 from app.api.router import api_router
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import get_settings
+from app.core.limiter import limiter
+from slowapi import _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
 settings = get_settings()
 app = FastAPI(title="creciendo")
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # Limpiar y procesar orígenes
 raw_origins = settings.CORS_ALLOWED_ORIGINS

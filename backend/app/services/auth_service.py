@@ -50,16 +50,22 @@ class AuthService(BaseService):
     
     def generate_tokens(self, user: User) -> dict:
         settings = get_settings()
+        token_data = {"sub": user.email, "token_version": user.token_version}
         access_token = create_access_token(
-            data={"sub": user.email},
+            data=token_data,
             expires_delta=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         )
         refresh_token = create_access_token(
-            data={"sub": user.email, "type": "refresh"},
+            data={**token_data, "type": "refresh"},
             expires_delta=timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
         )
         return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
-    
+
+    def logout_user(self, user: User) -> None:
+        user.token_version += 1
+        self.user_repo.update()
+        logger.info(f"User {user.id} logged out, token_version={user.token_version}")
+
     def refresh_token(self, refresh_token: str) -> dict:
         settings = get_settings()
         payload = jwt.decode(
@@ -68,14 +74,18 @@ class AuthService(BaseService):
         if payload.get("type") != "refresh":
             logger.warning("Token refresh failed: Invalid token type")
             raise ValueError("Token inválido")
-        
+
         user = self.user_repo.get_by_email(payload["sub"])
         if not user:
             logger.warning(f"Token refresh failed: User {payload['sub']} not found")
             raise ValueError("Usuario no encontrado")
-        
+
+        if payload.get("token_version") != user.token_version:
+            logger.warning(f"Token refresh failed: token_version mismatch for user {user.id}")
+            raise ValueError("Token inválido o revocado")
+
         access_token = create_access_token(
-            data={"sub": user.email},
+            data={"sub": user.email, "token_version": user.token_version},
             expires_delta=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
         )
         return {"access_token": access_token, "token_type": "bearer"}

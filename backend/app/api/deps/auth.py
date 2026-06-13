@@ -31,6 +31,10 @@ def get_current_user(
     user = user_repo.get_by_email(email)
     if user is None:
         raise credentials_exception
+
+    if payload.get("token_version") != user.token_version:
+        raise credentials_exception
+
     return user
 
 def get_current_active_user(current_user: User = Depends(get_current_user)):
