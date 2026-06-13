@@ -8,12 +8,20 @@ function normalizeApiError(err, fallback) {
 
 export const useGrowthStore = defineStore("growth", () => {
   const records = ref([]);
+  // Mapa para cachear registros por bebé: { babyId: [registros] }
+  const recordsByBaby = ref({});
   const isLoading = ref(false);
   const error = ref(null);
 
   const sortedRecords = computed(() => {
     return [...records.value].sort((a, b) => new Date(b.measured_at) - new Date(a.measured_at));
   });
+
+  const getLatestRecordByBabyId = (babyId) => {
+    const list = recordsByBaby.value[babyId] || [];
+    if (!list.length) return null;
+    return [...list].sort((a, b) => new Date(b.measured_at) - new Date(a.measured_at))[0];
+  };
 
   async function fetchRecords(babyId) {
     if (!babyId) return;
@@ -22,9 +30,27 @@ export const useGrowthStore = defineStore("growth", () => {
     try {
       const data = await growthApi.listRecords(babyId);
       records.value = data;
+      recordsByBaby.value[babyId] = data;
     } catch (err) {
       error.value = normalizeApiError(err, "Error al cargar registros de crecimiento");
       throw err;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  async function fetchRecordsForMultipleBabies(babies) {
+    if (!babies || babies.length === 0) return;
+    isLoading.value = true;
+    try {
+      await Promise.all(
+        babies.map(async (baby) => {
+          const data = await growthApi.listRecords(baby.id);
+          recordsByBaby.value[baby.id] = data;
+        })
+      );
+    } catch (err) {
+      console.error("Error en carga agregada de crecimiento", err);
     } finally {
       isLoading.value = false;
     }
@@ -67,10 +93,13 @@ export const useGrowthStore = defineStore("growth", () => {
 
   return {
     records,
+    recordsByBaby,
     isLoading,
     error,
     sortedRecords,
+    getLatestRecordByBabyId,
     fetchRecords,
+    fetchRecordsForMultipleBabies,
     createRecord,
     updateRecord,
     deleteRecord,
